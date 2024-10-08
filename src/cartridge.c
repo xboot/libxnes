@@ -49,6 +49,9 @@ static int xnes_cartridge_mapper_init(struct xnes_cartridge_t * c)
 		case 7:
 			xnes_mapper7_init(c);
 			return 1;
+		case 66:
+			xnes_mapper66_init(c);
+			return 1;
 		case 225:
 			xnes_mapper225_init(c);
 			return 1;

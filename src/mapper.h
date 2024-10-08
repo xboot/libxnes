@@ -13,6 +13,7 @@ void xnes_mapper2_init(struct xnes_cartridge_t * c);
 void xnes_mapper3_init(struct xnes_cartridge_t * c);
 void xnes_mapper4_init(struct xnes_cartridge_t * c);
 void xnes_mapper7_init(struct xnes_cartridge_t * c);
+void xnes_mapper66_init(struct xnes_cartridge_t * c);
 void xnes_mapper225_init(struct xnes_cartridge_t * c);
 
 #ifdef __cplusplus

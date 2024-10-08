@@ -324,6 +324,10 @@ struct xnes_cartridge_t {
 			} m7;
 			struct {
 				uint8_t chr_bank;
+				uint8_t prg_bank;
+			} m66;
+			struct {
+				uint8_t chr_bank;
 				uint8_t prg_banks;
 				uint8_t prg_bank0;
 				uint8_t prg_bank1;
