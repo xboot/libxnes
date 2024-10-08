@@ -1,0 +1,12 @@
+#
+# Normal rules
+#
+*~
+
+#
+# Generated files
+#
+/roms
+/.cproject
+/.project
+/.settings
