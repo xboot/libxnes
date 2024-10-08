@@ -1097,14 +1097,14 @@ static inline void cpu_xaa(struct xnes_cpu_t * cpu, uint16_t addr)
 
 void xnes_cpu_init(struct xnes_cpu_t * cpu, struct xnes_ctx_t * ctx)
 {
-	memset(cpu, 0, sizeof(struct xnes_cpu_t));
+	xnes_memset(cpu, 0, sizeof(struct xnes_cpu_t));
 	cpu->ctx = ctx;
 	xnes_cpu_reset(cpu);
 }
 
 void xnes_cpu_reset(struct xnes_cpu_t * cpu)
 {
-	memset(cpu->ram, 0, sizeof(cpu->ram));
+	xnes_memset(cpu->ram, 0, sizeof(cpu->ram));
 	cpu->cycles = 0;
 	cpu->stall = 0;
 	cpu->pc = cpu_read16(cpu, 0xfffc);
@@ -1731,14 +1731,14 @@ void xnes_cpu_dump(struct xnes_cpu_t * cpu)
 	char * name = (char *)cpu_instruction_name[opcode];
 
 	if(bytes == 0)
-		XNES_DEBUG("%04X  %02X      ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0));
+		xnes_printf("%04X  %02X      ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0));
 	else if(bytes == 1)
-		XNES_DEBUG("%04X  %02X      ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0));
+		xnes_printf("%04X  %02X      ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0));
 	else if(bytes == 2)
-		XNES_DEBUG("%04X  %02X %02X   ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0), xnes_cpu_read8(cpu, cpu->pc + 1));
+		xnes_printf("%04X  %02X %02X   ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0), xnes_cpu_read8(cpu, cpu->pc + 1));
 	else if(bytes == 3)
-		XNES_DEBUG("%04X  %02X %02X %02X", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0), xnes_cpu_read8(cpu, cpu->pc + 1), xnes_cpu_read8(cpu, cpu->pc + 2));
+		xnes_printf("%04X  %02X %02X %02X", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0), xnes_cpu_read8(cpu, cpu->pc + 1), xnes_cpu_read8(cpu, cpu->pc + 2));
 	if(name)
-		XNES_DEBUG("  %s  ", name);
-	XNES_DEBUG("A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%d\r\n", cpu->a, cpu->x, cpu->y, cpu_get_flags(cpu), cpu->sp, (int)cpu->cycles);
+		xnes_printf("  %s  ", name);
+	xnes_printf("A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%d\r\n", cpu->a, cpu->x, cpu->y, cpu_get_flags(cpu), cpu->sp, (int)cpu->cycles);
 }

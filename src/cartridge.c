@@ -53,7 +53,7 @@ static int xnes_cartridge_mapper_init(struct xnes_cartridge_t * c)
 			xnes_mapper225_init(c);
 			return 1;
 		default:
-			XNES_DEBUG("Not support mapper number '%d'\r\n", c->mapper_number);
+			xnes_printf("Not support mapper number '%d'\r\n", c->mapper_number);
 			break;
 		}
 	}
@@ -71,12 +71,12 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 	if((p[0] != 'N') || (p[1] != 'E') || (p[2] != 'S') || (p[3] != 0x1a))
 		return NULL;
 
-	struct xnes_cartridge_t * c = malloc(sizeof(struct xnes_cartridge_t));
+	struct xnes_cartridge_t * c = xnes_malloc(sizeof(struct xnes_cartridge_t));
 	if(!c)
 		return NULL;
 
-	memset(c, 0, sizeof(struct xnes_cartridge_t));
-	memcpy(&c->header, buf, 16);
+	xnes_memset(c, 0, sizeof(struct xnes_cartridge_t));
+	xnes_memcpy(&c->header, buf, 16);
 	c->ctx = ctx;
 
 	if(((c->header.flags_7 >> 2) & 0x3) == 0x2)
@@ -93,8 +93,8 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		if((c->header.flags_6 >> 2) & 0x1)
 		{
 			c->trainer_size = 512;
-			c->trainer = malloc(c->trainer_size);
-			memcpy(c->trainer, p, c->trainer_size);
+			c->trainer = xnes_malloc(c->trainer_size);
+			xnes_memcpy(c->trainer, p, c->trainer_size);
 			p += c->trainer_size;
 		}
 		else
@@ -104,15 +104,15 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		}
 
 		c->prg_rom_size = c->header.prg_rom_size_lsb * 16384;
-		c->prg_rom = malloc(c->prg_rom_size);
-		memcpy(c->prg_rom, p, c->prg_rom_size);
+		c->prg_rom = xnes_malloc(c->prg_rom_size);
+		xnes_memcpy(c->prg_rom, p, c->prg_rom_size);
 		p += c->prg_rom_size;
 
 		if(((c->header.prg_ram_shift_count >> 0) & 0xf) > 0)
 		{
 			c->prg_ram_size = 64 << ((c->header.prg_ram_shift_count >> 0) & 0xf);
-			c->prg_ram = malloc(c->prg_ram_size);
-			memset(c->prg_ram, 0, c->prg_ram_size);
+			c->prg_ram = xnes_malloc(c->prg_ram_size);
+			xnes_memset(c->prg_ram, 0, c->prg_ram_size);
 		}
 		else
 		{
@@ -123,8 +123,8 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		if(((c->header.prg_ram_shift_count >> 4) & 0xf) > 0)
 		{
 			c->prg_nvram_size = 64 << ((c->header.prg_ram_shift_count >> 4) & 0xf);
-			c->prg_nvram = malloc(c->prg_nvram_size);
-			memset(c->prg_nvram, 0, c->prg_nvram_size);
+			c->prg_nvram = xnes_malloc(c->prg_nvram_size);
+			xnes_memset(c->prg_nvram, 0, c->prg_nvram_size);
 		}
 		else
 		{
@@ -133,15 +133,15 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		}
 
 		c->chr_rom_size = c->header.chr_rom_size_lsb * 8192;
-		c->chr_rom = malloc(c->chr_rom_size);
-		memcpy(c->chr_rom, p, c->chr_rom_size);
+		c->chr_rom = xnes_malloc(c->chr_rom_size);
+		xnes_memcpy(c->chr_rom, p, c->chr_rom_size);
 		p += c->chr_rom_size;
 
 		if(((c->header.chr_ram_shift_count >> 0) & 0xf) > 0 )
 		{
 			c->chr_ram_size = 64 << ((c->header.chr_ram_shift_count >> 0) & 0xf);
-			c->chr_ram = malloc(c->chr_ram_size);
-			memset(c->chr_ram, 0, c->chr_ram_size);
+			c->chr_ram = xnes_malloc(c->chr_ram_size);
+			xnes_memset(c->chr_ram, 0, c->chr_ram_size);
 		}
 		else
 		{
@@ -152,8 +152,8 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		if(((c->header.chr_ram_shift_count >> 4) & 0xf) > 0 )
 		{
 			c->chr_nvram_size = 64 << ((c->header.chr_ram_shift_count >> 4) & 0xf);
-			c->chr_nvram = malloc(c->chr_nvram_size);
-			memset(c->chr_nvram, 0, c->chr_nvram_size);
+			c->chr_nvram = xnes_malloc(c->chr_nvram_size);
+			xnes_memset(c->chr_nvram, 0, c->chr_nvram_size);
 		}
 		else
 		{
@@ -206,8 +206,8 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		if((c->header.flags_6 >> 2) & 0x1)
 		{
 			c->trainer_size = 512;
-			c->trainer = malloc(c->trainer_size);
-			memcpy(c->trainer, p, c->trainer_size);
+			c->trainer = xnes_malloc(c->trainer_size);
+			xnes_memcpy(c->trainer, p, c->trainer_size);
 			p += c->trainer_size;
 		}
 		else
@@ -217,8 +217,8 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		}
 
 		c->prg_rom_size = c->header.prg_rom_size_lsb * 16384;
-		c->prg_rom = malloc(c->prg_rom_size);
-		memcpy(c->prg_rom, p, c->prg_rom_size);
+		c->prg_rom = xnes_malloc(c->prg_rom_size);
+		xnes_memcpy(c->prg_rom, p, c->prg_rom_size);
 		p += c->prg_rom_size;
 
 		c->prg_ram_size = 0;
@@ -230,8 +230,8 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 		c->chr_rom_size = c->header.chr_rom_size_lsb * 8192;
 		if(c->chr_rom_size == 0)
 			c->chr_rom_size = 8192;
-		c->chr_rom = malloc(c->chr_rom_size);
-		memcpy(c->chr_rom, p, c->chr_rom_size);
+		c->chr_rom = xnes_malloc(c->chr_rom_size);
+		xnes_memcpy(c->chr_rom, p, c->chr_rom_size);
 		p += c->chr_rom_size;
 
 		c->chr_ram_size = 0;
@@ -257,7 +257,7 @@ struct xnes_cartridge_t * xnes_cartridge_alloc(const void * buf, size_t len, str
 
 	if(!xnes_cartridge_mapper_init(c))
 	{
-		free(c);
+		xnes_free(c);
 		return NULL;
 	}
 	return c;
@@ -268,16 +268,16 @@ void xnes_cartridge_free(struct xnes_cartridge_t * c)
 	if(c)
 	{
 		if(c->trainer)
-			free(c->trainer);
+			xnes_free(c->trainer);
 		if(c->prg_rom)
-			free(c->prg_rom);
+			xnes_free(c->prg_rom);
 		if(c->chr_rom)
-			free(c->chr_rom);
+			xnes_free(c->chr_rom);
 		if(c->prg_ram)
-			free(c->prg_ram);
+			xnes_free(c->prg_ram);
 		if(c->chr_ram)
-			free(c->chr_ram);
-		free(c);
+			xnes_free(c->chr_ram);
+		xnes_free(c);
 	}
 }
 

@@ -10,7 +10,25 @@ extern "C" {
 #include <stdint.h>
 #include <string.h>
 
-#define XNES_DEBUG(...)		do{printf(__VA_ARGS__);}while(0)
+#ifndef xnes_malloc
+#define xnes_malloc		malloc
+#endif
+
+#ifndef xnes_free
+#define xnes_free		free
+#endif
+
+#ifndef xnes_memcpy
+#define xnes_memcpy		memcpy
+#endif
+
+#ifndef xnes_memset
+#define xnes_memset		memset
+#endif
+
+#ifndef xnes_printf
+#define xnes_printf		printf
+#endif
 
 #ifdef __cplusplus
 }

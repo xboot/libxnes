@@ -637,11 +637,11 @@ void xnes_apu_init(struct xnes_apu_t * apu, struct xnes_ctx_t * ctx)
 
 void xnes_apu_reset(struct xnes_apu_t * apu)
 {
-	memset(&apu->pulse1, 0, sizeof(struct xnes_apu_pulse_t));
-	memset(&apu->pulse2, 0, sizeof(struct xnes_apu_pulse_t));
-	memset(&apu->triangle, 0, sizeof(struct xnes_apu_triangle_t));
-	memset(&apu->noise, 0, sizeof(struct xnes_apu_noise_t));
-	memset(&apu->dmc, 0, sizeof(struct xnes_apu_dmc_t));
+	xnes_memset(&apu->pulse1, 0, sizeof(struct xnes_apu_pulse_t));
+	xnes_memset(&apu->pulse2, 0, sizeof(struct xnes_apu_pulse_t));
+	xnes_memset(&apu->triangle, 0, sizeof(struct xnes_apu_triangle_t));
+	xnes_memset(&apu->noise, 0, sizeof(struct xnes_apu_noise_t));
+	xnes_memset(&apu->dmc, 0, sizeof(struct xnes_apu_dmc_t));
 	apu->dmc.ctx = apu->ctx;
 	apu->pulse1.channel = 1;
 	apu->pulse2.channel = 2;

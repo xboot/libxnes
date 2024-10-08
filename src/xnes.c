@@ -28,15 +28,15 @@ struct xnes_ctx_t * xnes_ctx_alloc(const void * buf, size_t len)
 {
 	struct xnes_ctx_t * ctx;
 
-	ctx = malloc(sizeof(struct xnes_ctx_t));
+	ctx = xnes_malloc(sizeof(struct xnes_ctx_t));
 	if(!ctx)
 		return NULL;
 
-	memset(ctx, 0, sizeof(struct xnes_ctx_t));
+	xnes_memset(ctx, 0, sizeof(struct xnes_ctx_t));
 	ctx->cartridge = xnes_cartridge_alloc(buf, len, ctx);
 	if(!ctx->cartridge)
 	{
-		free(ctx);
+		xnes_free(ctx);
 		return NULL;
 	}
 
@@ -54,7 +54,7 @@ void xnes_ctx_free(struct xnes_ctx_t * ctx)
 	{
 		if(ctx->cartridge)
 			xnes_cartridge_free(ctx->cartridge);
-		free(ctx);
+		xnes_free(ctx);
 	}
 }
 

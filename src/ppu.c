@@ -729,7 +729,7 @@ void xnes_ppu_write_register(struct xnes_ppu_t * ppu, uint16_t addr, uint8_t val
 void xnes_ppu_set_palette(struct xnes_ppu_t * ppu, uint32_t * palette)
 {
 	if(ppu && palette)
-		memcpy(&ppu->palette[0], palette, sizeof(uint32_t) * 64);
+		xnes_memcpy(&ppu->palette[0], palette, sizeof(uint32_t) * 64);
 }
 
 uint8_t xnes_ppu_is_white_pixel(struct xnes_ppu_t * ppu, uint8_t x, uint8_t y)
