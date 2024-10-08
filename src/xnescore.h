@@ -5,16 +5,7 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-
-#if 1
-#define XNES_DEBUG(...)		do{printf(__VA_ARGS__);}while(0)
-#else
-#define XNES_DEBUG(...)
-#endif
+#include <xnesconf.h>
 
 struct xnes_ctx_t;
 

@@ -10,6 +10,7 @@ extern "C" {
 #include <apu.h>
 #include <controller.h>
 #include <cartridge.h>
+#include <version.h>
 
 struct xnes_ctx_t * xnes_ctx_alloc(const void * buf, size_t len);
 void xnes_ctx_free(struct xnes_ctx_t * ctx);
