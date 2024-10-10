@@ -277,9 +277,12 @@ struct xnes_cartridge_t {
 	uint8_t sram[8192];
 
 	struct {
-		uint8_t (*read)(struct xnes_ctx_t * ctx, uint16_t addr);
-		void (*write)(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val);
-		void (*step)(struct xnes_ctx_t * ctx);
+		uint8_t (*cpu_read)(struct xnes_ctx_t * ctx, uint16_t addr);
+		void (*cpu_write)(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val);
+		uint8_t (*ppu_read)(struct xnes_ctx_t * ctx, uint16_t addr);
+		void (*ppu_write)(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val);
+		void (*ppu_step)(struct xnes_ctx_t * ctx);
+		void (*apu_step)(struct xnes_ctx_t * ctx);
 
 		union {
 			struct {

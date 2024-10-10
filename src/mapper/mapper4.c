@@ -93,22 +93,17 @@ static void mapper4_update_offsets(struct xnes_cartridge_t * c)
 	}
 }
 
-static uint8_t xnes_mapper4_read(struct xnes_ctx_t * ctx, uint16_t addr)
+static uint8_t xnes_mapper4_cpu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
 	int bank, offset;
 
 	switch(addr >> 13)
 	{
-	/* PPU address space */
 	case 0:	/* [0x0000, 0x1FFF] */
-		bank = addr >> 10;
-		offset = addr & 0x03ff;
-		return c->chr_rom[c->mapper.m.m4.chr_offsets[bank] + offset];
+		break;
 	case 1:	/* [0x2000, 0x3FFF] */
 		break;
-
-	/* CPU address space */
 	case 2:	/* [0x4000, 0x5FFF] */
 		break;
 	case 3:	/* [0x6000, 0x7FFF] */
@@ -127,23 +122,16 @@ static uint8_t xnes_mapper4_read(struct xnes_ctx_t * ctx, uint16_t addr)
 	return 0;
 }
 
-static void xnes_mapper4_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+static void xnes_mapper4_cpu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
-	int bank, offset;
 
 	switch(addr >> 13)
 	{
-	/* PPU address space */
 	case 0:	/* [0x0000, 0x1FFF] */
-		bank = addr >> 10;
-		offset = addr & 0x03ff;
-		c->chr_rom[c->mapper.m.m4.chr_offsets[bank] + offset] = val;
 		break;
 	case 1:	/* [0x2000, 0x3FFF] */
 		break;
-
-	/* CPU address space */
 	case 2:	/* [0x4000, 0x5FFF] */
 		break;
 	case 3:	/* [0x6000, 0x7FFF] */
@@ -192,7 +180,69 @@ static void xnes_mapper4_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t v
 	}
 }
 
-static void xnes_mapper4_step(struct xnes_ctx_t * ctx)
+static uint8_t xnes_mapper4_ppu_read(struct xnes_ctx_t * ctx, uint16_t addr)
+{
+	struct xnes_cartridge_t * c = ctx->cartridge;
+	int bank, offset;
+
+	switch(addr >> 13)
+	{
+	case 0:	/* [0x0000, 0x1FFF] */
+		bank = addr >> 10;
+		offset = addr & 0x03ff;
+		return c->chr_rom[c->mapper.m.m4.chr_offsets[bank] + offset];
+	case 1:	/* [0x2000, 0x3FFF] */
+		break;
+	case 2:	/* [0x4000, 0x5FFF] */
+		break;
+	case 3:	/* [0x6000, 0x7FFF] */
+		break;
+	case 4:	/* [0x8000, 0x9FFF] */
+		break;
+	case 5:	/* [0xA000, 0xBFFF] */
+		break;
+	case 6:	/* [0xC000, 0xDFFF] */
+		break;
+	case 7:	/* [0xE000, 0xFFFF] */
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+
+static void xnes_mapper4_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+{
+	struct xnes_cartridge_t * c = ctx->cartridge;
+	int bank, offset;
+
+	switch(addr >> 13)
+	{
+	case 0:	/* [0x0000, 0x1FFF] */
+		bank = addr >> 10;
+		offset = addr & 0x03ff;
+		c->chr_rom[c->mapper.m.m4.chr_offsets[bank] + offset] = val;
+		break;
+	case 1:	/* [0x2000, 0x3FFF] */
+		break;
+	case 2:	/* [0x4000, 0x5FFF] */
+		break;
+	case 3:	/* [0x6000, 0x7FFF] */
+		break;
+	case 4:	/* [0x8000, 0x9FFF] */
+		break;
+	case 5:	/* [0xA000, 0xBFFF] */
+		break;
+	case 6:	/* [0xC000, 0xDFFF] */
+		break;
+	case 7:	/* [0xE000, 0xFFFF] */
+		break;
+	default:
+		break;
+	}
+}
+
+static void xnes_mapper4_ppu_step(struct xnes_ctx_t * ctx)
 {
 	struct xnes_ppu_t *ppu = &ctx->ppu;
 	struct xnes_cartridge_t *c = ctx->cartridge;
@@ -223,7 +273,10 @@ void xnes_mapper4_init(struct xnes_cartridge_t * c)
 	c->mapper.m.m4.prg_offsets[2] = mapper4_prg_bank_offset(c, -2);
 	c->mapper.m.m4.prg_offsets[3] = mapper4_prg_bank_offset(c, -1);
 
-	c->mapper.read = xnes_mapper4_read;
-	c->mapper.write = xnes_mapper4_write;
-	c->mapper.step = xnes_mapper4_step;
+	c->mapper.cpu_read = xnes_mapper4_cpu_read;
+	c->mapper.cpu_write = xnes_mapper4_cpu_write;
+	c->mapper.ppu_read = xnes_mapper4_ppu_read;
+	c->mapper.ppu_write = xnes_mapper4_ppu_write;
+	c->mapper.apu_step = NULL;
+	c->mapper.ppu_step = xnes_mapper4_ppu_step;
 }

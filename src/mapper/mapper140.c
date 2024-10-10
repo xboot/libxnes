@@ -24,19 +24,16 @@
 
 #include <mapper.h>
 
-static uint8_t xnes_mapper140_read(struct xnes_ctx_t * ctx, uint16_t addr)
+static uint8_t xnes_mapper140_cpu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
 
 	switch(addr >> 13)
 	{
-	/* PPU address space */
 	case 0:	/* [0x0000, 0x1FFF] */
-		return c->chr_rom[(c->mapper.m.m140.chr_bank << 13) + addr];
+		break;
 	case 1:	/* [0x2000, 0x3FFF] */
 		break;
-
-	/* CPU address space */
 	case 2:	/* [0x4000, 0x5FFF] */
 		break;
 	case 3:	/* [0x6000, 0x7FFF] */
@@ -52,20 +49,16 @@ static uint8_t xnes_mapper140_read(struct xnes_ctx_t * ctx, uint16_t addr)
 	return 0;
 }
 
-static void xnes_mapper140_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+static void xnes_mapper140_cpu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
 
 	switch(addr >> 13)
 	{
-	/* PPU address space */
 	case 0:	/* [0x0000, 0x1FFF] */
-		c->chr_rom[addr] = val;
 		break;
 	case 1:	/* [0x2000, 0x3FFF] */
 		break;
-
-	/* CPU address space */
 	case 2:	/* [0x4000, 0x5FFF] */
 		break;
 	case 3:	/* [0x6000, 0x7FFF] */
@@ -82,8 +75,60 @@ static void xnes_mapper140_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t
 	}
 }
 
-static void xnes_mapper140_step(struct xnes_ctx_t * ctx)
+static uint8_t xnes_mapper140_ppu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {
+	struct xnes_cartridge_t * c = ctx->cartridge;
+
+	switch(addr >> 13)
+	{
+	case 0:	/* [0x0000, 0x1FFF] */
+		return c->chr_rom[(c->mapper.m.m140.chr_bank << 13) + addr];
+	case 1:	/* [0x2000, 0x3FFF] */
+		break;
+	case 2:	/* [0x4000, 0x5FFF] */
+		break;
+	case 3:	/* [0x6000, 0x7FFF] */
+		break;
+	case 4:	/* [0x8000, 0x9FFF] */
+		break;
+	case 5:	/* [0xA000, 0xBFFF] */
+		break;
+	case 6:	/* [0xC000, 0xDFFF] */
+		break;
+	case 7:	/* [0xE000, 0xFFFF] */
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+
+static void xnes_mapper140_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+{
+	struct xnes_cartridge_t * c = ctx->cartridge;
+
+	switch(addr >> 13)
+	{
+	case 0:	/* [0x0000, 0x1FFF] */
+		c->chr_rom[addr] = val;
+		break;
+	case 1:	/* [0x2000, 0x3FFF] */
+		break;
+	case 2:	/* [0x4000, 0x5FFF] */
+		break;
+	case 3:	/* [0x6000, 0x7FFF] */
+		break;
+	case 4:	/* [0x8000, 0x9FFF] */
+		break;
+	case 5:	/* [0xA000, 0xBFFF] */
+		break;
+	case 6:	/* [0xC000, 0xDFFF] */
+		break;
+	case 7:	/* [0xE000, 0xFFFF] */
+		break;
+	default:
+		break;
+	}
 }
 
 void xnes_mapper140_init(struct xnes_cartridge_t * c)
@@ -91,7 +136,10 @@ void xnes_mapper140_init(struct xnes_cartridge_t * c)
 	c->mapper.m.m140.chr_bank = 0;
 	c->mapper.m.m140.prg_bank = 0;
 
-	c->mapper.read = xnes_mapper140_read;
-	c->mapper.write = xnes_mapper140_write;
-	c->mapper.step = xnes_mapper140_step;
+	c->mapper.cpu_read = xnes_mapper140_cpu_read;
+	c->mapper.cpu_write = xnes_mapper140_cpu_write;
+	c->mapper.ppu_read = xnes_mapper140_ppu_read;
+	c->mapper.ppu_write = xnes_mapper140_ppu_write;
+	c->mapper.apu_step = NULL;
+	c->mapper.ppu_step = NULL;
 }

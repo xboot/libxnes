@@ -184,7 +184,7 @@ uint8_t xnes_cpu_read8(struct xnes_cpu_t * cpu, uint16_t addr)
 		case 0x4018 ... 0x401f: /* UNUSED */
 			break;
 		default: /* CARTRIDGE */
-			return xnes_cartridge_mapper_read(ctx, addr);
+			return xnes_cartridge_mapper_cpu_read(ctx, addr);
 		}
 		break;
 	}
@@ -234,7 +234,7 @@ void xnes_cpu_write8(struct xnes_cpu_t * cpu, uint16_t addr, uint8_t val)
 		case 0x4018 ... 0x401f: /* UNUSED */
 			break;
 		default: /* CARTRIDGE */
-			xnes_cartridge_mapper_write(ctx, addr, val);
+			xnes_cartridge_mapper_cpu_write(ctx, addr, val);
 			break;
 		}
 		break;

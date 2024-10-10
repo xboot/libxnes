@@ -65,7 +65,7 @@ static uint8_t ppu_read8(struct xnes_ppu_t * ppu, uint16_t addr)
 	{
 	/* [0x0000, 0x1FFF] */
 	case 0:
-		return xnes_cartridge_mapper_read(ctx, addr);
+		return xnes_cartridge_mapper_ppu_read(ctx, addr);
 
 	/* [0x2000, 0x3FFF] */
 	case 1:
@@ -95,7 +95,7 @@ static void ppu_write8(struct xnes_ppu_t * ppu, uint16_t addr, uint8_t val)
 	{
 	/* [0x0000, 0x1FFF] */
 	case 0:
-		xnes_cartridge_mapper_write(ctx, addr, val);
+		xnes_cartridge_mapper_ppu_write(ctx, addr, val);
 		break;
 
 	/* [0x2000, 0x3FFF] */
@@ -659,7 +659,7 @@ void xnes_ppu_reset(struct xnes_ppu_t * ppu)
 void xnes_ppu_step(struct xnes_ppu_t * ppu)
 {
 	ppu_step(ppu);
-	xnes_cartridge_mapper_step(ppu->ctx);
+	xnes_cartridge_mapper_ppu_step(ppu->ctx);
 }
 
 uint8_t xnes_ppu_read_register(struct xnes_ppu_t * ppu, uint16_t addr)

@@ -287,17 +287,34 @@ void xnes_cartridge_free(struct xnes_cartridge_t * c)
 	}
 }
 
-uint8_t xnes_cartridge_mapper_read(struct xnes_ctx_t * ctx, uint16_t addr)
+uint8_t xnes_cartridge_mapper_cpu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {
-	return ctx->cartridge->mapper.read(ctx, addr);
+	return ctx->cartridge->mapper.cpu_read(ctx, addr);
 }
 
-void xnes_cartridge_mapper_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+void xnes_cartridge_mapper_cpu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
 {
-	ctx->cartridge->mapper.write(ctx, addr, val);
+	ctx->cartridge->mapper.cpu_write(ctx, addr, val);
 }
 
-void xnes_cartridge_mapper_step(struct xnes_ctx_t * ctx)
+uint8_t xnes_cartridge_mapper_ppu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {
-	ctx->cartridge->mapper.step(ctx);
+	return ctx->cartridge->mapper.ppu_read(ctx, addr);
+}
+
+void xnes_cartridge_mapper_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+{
+	ctx->cartridge->mapper.ppu_write(ctx, addr, val);
+}
+
+void xnes_cartridge_mapper_apu_step(struct xnes_ctx_t * ctx)
+{
+	if(ctx->cartridge->mapper.apu_step)
+		ctx->cartridge->mapper.apu_step(ctx);
+}
+
+void xnes_cartridge_mapper_ppu_step(struct xnes_ctx_t * ctx)
+{
+	if(ctx->cartridge->mapper.ppu_step)
+		ctx->cartridge->mapper.ppu_step(ctx);
 }
