@@ -20,19 +20,14 @@ struct xnes_cpu_t {
 	uint8_t a;
 	uint8_t x;
 	uint8_t y;
-	union {
-		struct {
-			uint8_t c :1;
-			uint8_t z :1;
-			uint8_t i :1;
-			uint8_t d :1;
-			uint8_t b :1;
-			uint8_t u :1;
-			uint8_t v :1;
-			uint8_t n :1;
-		};
-		uint8_t p;
-	};
+	uint8_t c;
+	uint8_t z;
+	uint8_t i;
+	uint8_t d;
+	uint8_t b;
+	uint8_t u;
+	uint8_t v;
+	uint8_t n;
 	uint8_t interrupt;
 };
 
