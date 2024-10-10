@@ -15,19 +15,19 @@ struct xnes_cpu_t {
 	uint8_t ram[2048];
 	uint64_t cycles;
 	uint32_t stall;
-	uint16_t pc;
-	uint8_t sp;
-	uint8_t a;
-	uint8_t x;
-	uint8_t y;
-	uint8_t c;
-	uint8_t z;
-	uint8_t i;
-	uint8_t d;
-	uint8_t b;
-	uint8_t u;
-	uint8_t v;
-	uint8_t n;
+	uint16_t pc;		/* program counter */
+	uint8_t sp;			/* stack pointer */
+	uint8_t a;			/* accumulator */
+	uint8_t x;			/* x */
+	uint8_t y;			/* y */
+	uint8_t c;			/* carry */
+	uint8_t z;			/* zero */
+	uint8_t i;			/* interrupt */
+	uint8_t d;			/* decimal */
+	uint8_t b;			/* break */
+	uint8_t u;			/* unused */
+	uint8_t v;			/* overflow */
+	uint8_t n;			/* negative */
 	uint8_t interrupt;
 };
 
