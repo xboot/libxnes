@@ -83,6 +83,12 @@ cd examples/linux/output/
 | SLOW SPEED | L      |L|
 | FAST SPEED | R      |R|
 
+## Links
+
+* [The Chinese Discussion Posts](https://whycan.com/t_11467.html)
+* [The Nesdev Wiki](https://www.nesdev.org/wiki/Nesdev_Wiki)
+* [The NES Cart Database](https://nescartdb.com)
+
 ## License
 
 This library is free software; you can redistribute it and or modify it under the terms of the MIT license. See [MIT License](LICENSE) for details.
