@@ -12,7 +12,7 @@ void xnes_apu_reset(struct xnes_apu_t * apu);
 void xnes_apu_step(struct xnes_apu_t * apu);
 uint8_t xnes_apu_read_register(struct xnes_apu_t * apu, uint16_t addr);
 void xnes_apu_write_register(struct xnes_apu_t * apu, uint16_t addr, uint8_t val);
-void xnes_apu_set_audio_callback(struct xnes_apu_t * apu, void * ctx, void (*cb)(void *, float), int rate);
+void xnes_apu_set_audio_callback(struct xnes_apu_t * apu, void * data, void (*cb)(void *, float), int rate);
 
 #ifdef __cplusplus
 }

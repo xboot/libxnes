@@ -75,6 +75,12 @@ void xnes_set_debugger(struct xnes_ctx_t * ctx, int (*debugger)(struct xnes_ctx_
 		ctx->cpu.debugger = debugger;
 }
 
+void xnes_set_audio(struct xnes_ctx_t * ctx, void * data, void (*cb)(void *, float), int rate)
+{
+	if(ctx)
+		xnes_apu_set_audio_callback(&ctx->apu, data, cb, rate);
+}
+
 void xnes_speed(struct xnes_ctx_t * ctx, float speed)
 {
 	if(ctx && ctx->cartridge)

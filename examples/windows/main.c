@@ -207,7 +207,7 @@ static void window_context_reload(struct window_context_t * wctx, const char * f
 			if(wctx->nes)
 			{
 				SDL_ClearQueuedAudio(wctx->audio);
-				xnes_apu_set_audio_callback(&wctx->nes->apu, wctx, window_audio_callback, wctx->havespec.freq);
+				xnes_set_audio(wctx->nes, wctx, window_audio_callback, wctx->havespec.freq);
 			}
 			free(buf);
 		}

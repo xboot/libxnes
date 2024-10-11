@@ -191,8 +191,8 @@ struct xnes_apu_t {
 	char frame_irq;
 
 	int audio_rate;
-	void * audio_ctx;
-	void (*audio_callback)(void * ctx, float v);
+	void * audio_data;
+	void (*audio_callback)(void * data, float v);
 };
 
 enum {

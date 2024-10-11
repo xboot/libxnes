@@ -511,7 +511,7 @@ static inline float output(struct xnes_apu_t * apu)
 static inline void send_sample(struct xnes_apu_t * apu)
 {
 	if(apu->audio_callback)
-		apu->audio_callback(apu->audio_ctx, filter_chain_step(apu->filter, 3, output(apu)));
+		apu->audio_callback(apu->audio_data, filter_chain_step(apu->filter, 3, output(apu)));
 }
 
 static inline void step_frame_counter(struct xnes_apu_t * apu)
@@ -652,12 +652,12 @@ void xnes_apu_reset(struct xnes_apu_t * apu)
 	apu->frame_irq = 0;
 }
 
-void xnes_apu_set_audio_callback(struct xnes_apu_t * apu, void * ctx, void (*cb)(void *, float), int rate)
+void xnes_apu_set_audio_callback(struct xnes_apu_t * apu, void * data, void (*cb)(void *, float), int rate)
 {
 	if(apu)
 	{
 		apu->audio_rate = rate;
-		apu->audio_ctx = ctx;
+		apu->audio_data = data;
 		apu->audio_callback = cb;
 		filter_high_pass(&apu->filter[0], apu->audio_rate, 90);
 		filter_high_pass(&apu->filter[1], apu->audio_rate, 440);
