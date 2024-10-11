@@ -9,6 +9,8 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdarg.h>
+#include <limits.h>
 
 #ifndef xnes_malloc
 #define xnes_malloc		malloc
