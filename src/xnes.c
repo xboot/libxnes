@@ -81,7 +81,7 @@ void xnes_set_audio(struct xnes_ctx_t * ctx, void * data, void (*cb)(void *, flo
 		xnes_apu_set_audio_callback(&ctx->apu, data, cb, rate);
 }
 
-void xnes_speed(struct xnes_ctx_t * ctx, float speed)
+void xnes_set_speed(struct xnes_ctx_t * ctx, float speed)
 {
 	if(ctx && ctx->cartridge)
 	{

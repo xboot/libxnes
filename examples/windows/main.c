@@ -297,11 +297,11 @@ int main(int argc, char * argv[])
 						break;
 
 					case SDLK_F1:
-						xnes_speed(wctx->nes, 0.5);
+						xnes_set_speed(wctx->nes, 0.5);
 						break;
 
 					case SDLK_F2:
-						xnes_speed(wctx->nes, 2.0);
+						xnes_set_speed(wctx->nes, 2.0);
 						break;
 
 					case SDLK_w:
@@ -363,11 +363,11 @@ int main(int argc, char * argv[])
 					switch(e.key.keysym.sym)
 					{
 					case SDLK_F1:
-						xnes_speed(wctx->nes, 1.0);
+						xnes_set_speed(wctx->nes, 1.0);
 						break;
 
 					case SDLK_F2:
-						xnes_speed(wctx->nes, 1.0);
+						xnes_set_speed(wctx->nes, 1.0);
 						break;
 
 					case SDLK_w:
@@ -494,10 +494,10 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
 							break;
 						case 4: /* L */
-							xnes_speed(wctx->nes, 0.5);
+							xnes_set_speed(wctx->nes, 0.5);
 							break;
 						case 5: /* R */
-							xnes_speed(wctx->nes, 2.0);
+							xnes_set_speed(wctx->nes, 2.0);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
@@ -526,10 +526,10 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
 							break;
 						case 4: /* L */
-							xnes_speed(wctx->nes, 0.5);
+							xnes_set_speed(wctx->nes, 0.5);
 							break;
 						case 5: /* R */
-							xnes_speed(wctx->nes, 2.0);
+							xnes_set_speed(wctx->nes, 2.0);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
@@ -561,10 +561,10 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
 							break;
 						case 4: /* L */
-							xnes_speed(wctx->nes, 1.0);
+							xnes_set_speed(wctx->nes, 1.0);
 							break;
 						case 5: /* R */
-							xnes_speed(wctx->nes, 1.0);
+							xnes_set_speed(wctx->nes, 1.0);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, 0, XNES_JOYSTICK_SELECT);
@@ -593,10 +593,10 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
 							break;
 						case 4: /* L */
-							xnes_speed(wctx->nes, 1.0);
+							xnes_set_speed(wctx->nes, 1.0);
 							break;
 						case 5: /* R */
-							xnes_speed(wctx->nes, 1.0);
+							xnes_set_speed(wctx->nes, 1.0);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, 0, XNES_JOYSTICK_SELECT);

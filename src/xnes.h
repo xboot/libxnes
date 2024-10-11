@@ -17,7 +17,7 @@ void xnes_ctx_free(struct xnes_ctx_t * ctx);
 void xnes_reset(struct xnes_ctx_t * ctx);
 void xnes_set_debugger(struct xnes_ctx_t * ctx, int (*debugger)(struct xnes_ctx_t *));
 void xnes_set_audio(struct xnes_ctx_t * ctx, void * data, void (*cb)(void *, float), int rate);
-void xnes_speed(struct xnes_ctx_t * ctx, float speed);
+void xnes_set_speed(struct xnes_ctx_t * ctx, float speed);
 uint64_t xnes_step_frame(struct xnes_ctx_t * ctx);
 int xnes_save(struct xnes_ctx_t * ctx, void * buf);
 void xnes_restore(struct xnes_ctx_t * ctx, void * buf, int len);
