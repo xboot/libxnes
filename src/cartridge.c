@@ -59,7 +59,6 @@ static int xnes_cartridge_mapper_init(struct xnes_cartridge_t * c)
 			xnes_mapper225_init(c);
 			return 1;
 		default:
-			xnes_printf("Not support mapper number '%d'\r\n", c->mapper_number);
 			break;
 		}
 	}

@@ -14,7 +14,6 @@ void xnes_cpu_write8(struct xnes_cpu_t * cpu, uint16_t addr, uint8_t val);
 void xnes_cpu_trigger_nmi(struct xnes_cpu_t * cpu);
 void xnes_cpu_trigger_irq(struct xnes_cpu_t * cpu);
 int xnes_cpu_step(struct xnes_cpu_t * cpu);
-void xnes_cpu_dump(struct xnes_cpu_t * cpu);
 
 #ifdef __cplusplus
 }

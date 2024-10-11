@@ -130,26 +130,6 @@ static const uint8_t cpu_instruction_page_cycle[256] = {
 	/* F0 */ 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0,
 };
 
-static const uint8_t cpu_instruction_name[256][4] = {
-	       /* 00    01      02     03     04     05     06     07     08     09     0A     0B     0C     0D     0E     0F */
-	/* 00 */ "BRK", "ORA", "KIL", "SLO", "NOP", "ORA", "ASL", "SLO", "PHP", "ORA", "ASL", "ANC", "NOP", "ORA", "ASL", "SLO",
-	/* 10 */ "BPL", "ORA", "KIL", "SLO", "NOP", "ORA", "ASL", "SLO", "CLC", "ORA", "NOP", "SLO", "NOP", "ORA", "ASL", "SLO",
-	/* 20 */ "JSR", "AND", "KIL", "RLA", "BIT", "AND", "ROL", "RLA", "PLP", "AND", "ROL", "ANC", "BIT", "AND", "ROL", "RLA",
-	/* 30 */ "BMI", "AND", "KIL", "RLA", "NOP", "AND", "ROL", "RLA", "SEC", "AND", "NOP", "RLA", "NOP", "AND", "ROL", "RLA",
-	/* 40 */ "RTI", "EOR", "KIL", "SRE", "NOP", "EOR", "LSR", "SRE", "PHA", "EOR", "LSR", "ALR", "JMP", "EOR", "LSR", "SRE",
-	/* 50 */ "BVC", "EOR", "KIL", "SRE", "NOP", "EOR", "LSR", "SRE", "CLI", "EOR", "NOP", "SRE", "NOP", "EOR", "LSR", "SRE",
-	/* 60 */ "RTS", "ADC", "KIL", "RRA", "NOP", "ADC", "ROR", "RRA", "PLA", "ADC", "ROR", "ARR", "JMP", "ADC", "ROR", "RRA",
-	/* 70 */ "BVS", "ADC", "KIL", "RRA", "NOP", "ADC", "ROR", "RRA", "SEI", "ADC", "NOP", "RRA", "NOP", "ADC", "ROR", "RRA",
-	/* 80 */ "NOP", "STA", "NOP", "SAX", "STY", "STA", "STX", "SAX", "DEY", "NOP", "TXA", "XAA", "STY", "STA", "STX", "SAX",
-	/* 90 */ "BCC", "STA", "KIL", "AHX", "STY", "STA", "STX", "SAX", "TYA", "STA", "TXS", "TAS", "SHY", "STA", "SHX", "AHX",
-	/* A0 */ "LDY", "LDA", "LDX", "LAX", "LDY", "LDA", "LDX", "LAX", "TAY", "LDA", "TAX", "LAX", "LDY", "LDA", "LDX", "LAX",
-	/* B0 */ "BCS", "LDA", "KIL", "LAX", "LDY", "LDA", "LDX", "LAX", "CLV", "LDA", "TSX", "LAS", "LDY", "LDA", "LDX", "LAX",
-	/* C0 */ "CPY", "CMP", "NOP", "DCP", "CPY", "CMP", "DEC", "DCP", "INY", "CMP", "DEX", "AXS", "CPY", "CMP", "DEC", "DCP",
-	/* D0 */ "BNE", "CMP", "KIL", "DCP", "NOP", "CMP", "DEC", "DCP", "CLD", "CMP", "NOP", "DCP", "NOP", "CMP", "DEC", "DCP",
-	/* E0 */ "CPX", "SBC", "NOP", "ISC", "CPX", "SBC", "INC", "ISC", "INX", "SBC", "NOP", "SBC", "CPX", "SBC", "INC", "ISC",
-	/* F0 */ "BEQ", "SBC", "KIL", "ISC", "NOP", "SBC", "INC", "ISC", "SED", "SBC", "NOP", "ISC", "NOP", "SBC", "INC", "ISC",
-};
-
 uint8_t xnes_cpu_read8(struct xnes_cpu_t * cpu, uint16_t addr)
 {
 	struct xnes_ctx_t * ctx = cpu->ctx;
@@ -1722,23 +1702,4 @@ int xnes_cpu_step(struct xnes_cpu_t * cpu)
 
 	cpu->cycles += cycles;
 	return cycles;
-}
-
-void xnes_cpu_dump(struct xnes_cpu_t * cpu)
-{
-	uint8_t opcode = xnes_cpu_read8(cpu, cpu->pc);
-	uint8_t bytes = cpu_instruction_size[opcode];
-	char * name = (char *)cpu_instruction_name[opcode];
-
-	if(bytes == 0)
-		xnes_printf("%04X  %02X      ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0));
-	else if(bytes == 1)
-		xnes_printf("%04X  %02X      ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0));
-	else if(bytes == 2)
-		xnes_printf("%04X  %02X %02X   ", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0), xnes_cpu_read8(cpu, cpu->pc + 1));
-	else if(bytes == 3)
-		xnes_printf("%04X  %02X %02X %02X", cpu->pc, xnes_cpu_read8(cpu, cpu->pc + 0), xnes_cpu_read8(cpu, cpu->pc + 1), xnes_cpu_read8(cpu, cpu->pc + 2));
-	if(name)
-		xnes_printf("  %s  ", name);
-	xnes_printf("A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%d\r\n", cpu->a, cpu->x, cpu->y, cpu_get_flags(cpu), cpu->sp, (int)cpu->cycles);
 }

@@ -26,10 +26,6 @@ extern "C" {
 #define xnes_memset		memset
 #endif
 
-#ifndef xnes_printf
-#define xnes_printf		printf
-#endif
-
 #ifdef __cplusplus
 }
 #endif
