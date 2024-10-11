@@ -1079,6 +1079,7 @@ void xnes_cpu_init(struct xnes_cpu_t * cpu, struct xnes_ctx_t * ctx)
 {
 	xnes_memset(cpu, 0, sizeof(struct xnes_cpu_t));
 	cpu->ctx = ctx;
+	cpu->debugger = NULL;
 	xnes_cpu_reset(cpu);
 }
 
@@ -1111,8 +1112,10 @@ int xnes_cpu_step(struct xnes_cpu_t * cpu)
 		cpu->stall--;
 		return 1;
 	}
-	int cycles = 0;
+	if(cpu->debugger && cpu->debugger(cpu->ctx))
+		return 0;
 
+	int cycles = 0;
 	if(cpu->interrupt & CPU_INTERRUPT_NMI)
 	{
 		cpu_stack_push16(cpu, cpu->pc);

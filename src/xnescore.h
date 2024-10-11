@@ -11,6 +11,7 @@ struct xnes_ctx_t;
 
 struct xnes_cpu_t {
 	struct xnes_ctx_t * ctx;
+	int (*debugger)(struct xnes_ctx_t *);
 
 	uint8_t ram[2048];
 	uint64_t cycles;

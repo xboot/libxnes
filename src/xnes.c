@@ -69,6 +69,12 @@ void xnes_reset(struct xnes_ctx_t * ctx)
 	}
 }
 
+void xnes_set_debugger(struct xnes_ctx_t * ctx, int (*debugger)(struct xnes_ctx_t *))
+{
+	if(ctx)
+		ctx->cpu.debugger = debugger;
+}
+
 void xnes_speed(struct xnes_ctx_t * ctx, float speed)
 {
 	if(ctx && ctx->cartridge)
