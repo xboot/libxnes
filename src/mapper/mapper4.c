@@ -244,10 +244,10 @@ static void xnes_mapper4_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8
 
 static void xnes_mapper4_ppu_step(struct xnes_ctx_t * ctx)
 {
-	struct xnes_ppu_t *ppu = &ctx->ppu;
-	struct xnes_cartridge_t *c = ctx->cartridge;
+	struct xnes_ppu_t * ppu = &ctx->ppu;
+	struct xnes_cartridge_t * c = ctx->cartridge;
 
-	if(ppu->cycle != 280)
+	if(ppu->cycles != 280)
 		return;
 	if((ppu->scanline > 239) && (ppu->scanline < 261))
 		return;

@@ -385,7 +385,7 @@ static void ppu_sprite_pixel(struct xnes_ppu_t * ppu, uint8_t * a, uint8_t * b)
 	}
 	for(int i = 0; i < ppu->sprite_count; i++)
 	{
-		int offset = (ppu->cycle - 1) - (int)(ppu->sprite_positions[i]);
+		int offset = (ppu->cycles - 1) - (int)(ppu->sprite_positions[i]);
 		if(offset < 0 || offset > 7)
 			continue;
 		offset = 7 - offset;
@@ -402,7 +402,7 @@ static void ppu_sprite_pixel(struct xnes_ppu_t * ppu, uint8_t * a, uint8_t * b)
 
 static void ppu_render_pixel(struct xnes_ppu_t * ppu)
 {
-	int x = ppu->cycle - 1;
+	int x = ppu->cycles - 1;
 	int y = ppu->scanline;
 	uint8_t background = ppu_background_pixel(ppu);
 	uint8_t i, sprite;
@@ -529,19 +529,19 @@ static void ppu_tick(struct xnes_ppu_t * ppu)
 
 	if(ppu->flag_show_background != 0 || ppu->flag_show_sprites != 0)
 	{
-		if(ppu->f == 1 && ppu->scanline == 261 && ppu->cycle == 339)
+		if(ppu->f == 1 && ppu->scanline == 261 && ppu->cycles == 339)
 		{
-			ppu->cycle = 0;
+			ppu->cycles = 0;
 			ppu->scanline = 0;
 			ppu->frame++;
 			ppu->f ^= 1;
 			return;
 		}
 	}
-	ppu->cycle++;
-	if(ppu->cycle > 340)
+	ppu->cycles++;
+	if(ppu->cycles > 340)
 	{
-		ppu->cycle = 0;
+		ppu->cycles = 0;
 		ppu->scanline++;
 		if(ppu->scanline > 261)
 		{
@@ -560,8 +560,8 @@ static void ppu_step(struct xnes_ppu_t * ppu)
 	uint8_t pre_line = (ppu->scanline == 261);
 	uint8_t visible_line = (ppu->scanline < 240);
 	uint8_t render_line = (pre_line || visible_line);
-	uint8_t pre_fetch_cycle = (ppu->cycle >= 321 && ppu->cycle <= 336);
-	uint8_t visible_cycle = (ppu->cycle >= 1 && ppu->cycle <= 256);
+	uint8_t pre_fetch_cycle = (ppu->cycles >= 321 && ppu->cycles <= 336);
+	uint8_t visible_cycle = (ppu->cycles >= 1 && ppu->cycles <= 256);
 	uint8_t fetch_cycle = (pre_fetch_cycle || visible_cycle);
 
 	if(rendering_enabled)
@@ -571,7 +571,7 @@ static void ppu_step(struct xnes_ppu_t * ppu)
 		if(render_line && fetch_cycle)
 		{
 			ppu->tile_data <<= 4;
-			switch(ppu->cycle % 8)
+			switch(ppu->cycles % 8)
 			{
 			case 1:
 				ppu_fetch_name_table_byte(ppu);
@@ -592,22 +592,22 @@ static void ppu_step(struct xnes_ppu_t * ppu)
 				break;
 			}
 		}
-		if(pre_line && ppu->cycle >= 280 && ppu->cycle <= 304)
+		if(pre_line && ppu->cycles >= 280 && ppu->cycles <= 304)
 			ppu_copy_y(ppu);
 		if(render_line)
 		{
-			if(fetch_cycle && ((ppu->cycle % 8) == 0))
+			if(fetch_cycle && ((ppu->cycles % 8) == 0))
 				ppu_increment_x(ppu);
-			if(ppu->cycle == 256)
+			if(ppu->cycles == 256)
 				ppu_increment_y(ppu);
-			if(ppu->cycle == 257)
+			if(ppu->cycles == 257)
 				ppu_copy_x(ppu);
 		}
 	}
 
 	if(rendering_enabled)
 	{
-		if(ppu->cycle == 257)
+		if(ppu->cycles == 257)
 		{
 			if(visible_line)
 				ppu_evaluate_sprites(ppu);
@@ -616,9 +616,9 @@ static void ppu_step(struct xnes_ppu_t * ppu)
 		}
 	}
 
-	if(ppu->scanline == 241 && ppu->cycle == 1)
+	if(ppu->scanline == 241 && ppu->cycles == 1)
 		ppu_set_vertical_blank(ppu);
-	if(pre_line && ppu->cycle == 1)
+	if(pre_line && ppu->cycles == 1)
 	{
 		ppu_clear_vertical_blank(ppu);
 		ppu->flag_sprite_zero_hit = 0;
@@ -648,7 +648,7 @@ static const uint32_t default_palette[64] = {
 void xnes_ppu_reset(struct xnes_ppu_t * ppu)
 {
 	xnes_ppu_set_palette(ppu, (uint32_t *)&default_palette[0]);
-	ppu->cycle = 340;
+	ppu->cycles = 340;
 	ppu->scanline = 240;
 	ppu->frame = 0;
 	ppu_write_control(ppu, 0);

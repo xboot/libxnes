@@ -36,7 +36,7 @@ struct xnes_ppu_t {
 
 	uint32_t palette[64];
 
-	int cycle;
+	int cycles;
 	int scanline;
 	uint64_t frame;
 
@@ -281,8 +281,8 @@ struct xnes_cartridge_t {
 		void (*cpu_write)(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val);
 		uint8_t (*ppu_read)(struct xnes_ctx_t * ctx, uint16_t addr);
 		void (*ppu_write)(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val);
-		void (*ppu_step)(struct xnes_ctx_t * ctx);
 		void (*apu_step)(struct xnes_ctx_t * ctx);
+		void (*ppu_step)(struct xnes_ctx_t * ctx);
 
 		union {
 			struct {
