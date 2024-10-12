@@ -28,27 +28,6 @@
 #include <context.h>
 #include <readline.h>
 
-enum esc_state_t {
-	ESC_STATE_NORMAL,
-	ESC_STATE_ESC,
-	ESC_STATE_CSI,
-};
-
-struct rl_buf_t {
-	char * prompt;
-	uint32_t * buf;
-	uint32_t * cut;
-	int bsize;
-	int pos;
-	int len;
-
-	enum esc_state_t state;
-	int params[8];
-	int num_params;
-	char utf8[32];
-	int usize;
-};
-
 static int ucs4_strlen(const uint32_t * s)
 {
 	const uint32_t * sc;
@@ -189,7 +168,7 @@ static void rl_delete(struct rl_buf_t * rl, uint32_t len)
 	}
 }
 
-static struct rl_buf_t * rl_alloc(const char * prompt)
+struct rl_buf_t * rl_alloc(const char * prompt)
 {
 	struct rl_buf_t * rl;
 
@@ -220,7 +199,7 @@ static struct rl_buf_t * rl_alloc(const char * prompt)
 	return rl;
 }
 
-static void rl_free(struct rl_buf_t * rl)
+void rl_free(struct rl_buf_t * rl)
 {
 	if(rl->prompt)
 		free(rl->prompt);
@@ -597,30 +576,25 @@ static int readline_handle(struct rl_buf_t * rl, uint32_t code)
 	return FALSE;
 }
 
-char * shell_readline(const char * prompt)
+char * shell_readline(struct rl_buf_t * rl)
 {
-	struct rl_buf_t * rl;
-	char * utf8 = NULL;
 	uint32_t code;
 
-	rl = rl_alloc(prompt);
-	if(!rl)
-		return NULL;
-
-	for(;;)
+	if(rl)
 	{
 		if(rl_getcode(rl, &code))
 		{
 			if(readline_handle(rl, code))
 			{
 				shell_printf("\r\n");
-				break;
+				if(rl->len > 0)
+				{
+					char * utf8 = ucs4_to_utf8_alloc(rl->buf, rl->len);
+					;//rl->len = 0;
+					return utf8;
+				}
 			}
 		}
 	}
-
-	if(rl->len > 0)
-		utf8 = ucs4_to_utf8_alloc(rl->buf, rl->len);
-	rl_free(rl);
-	return utf8;
+	return NULL;
 }

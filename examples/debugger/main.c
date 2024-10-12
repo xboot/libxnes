@@ -23,9 +23,10 @@
  */
 
 #include <SDL.h>
+#include <debugger.h>
 #include <xnes.h>
 
-#define SDL_SCREEN_SCALE	(4)
+#define SDL_SCREEN_SCALE	(1)
 
 struct window_context_t {
 	SDL_Window * window;
@@ -216,6 +217,7 @@ int main(int argc, char * argv[])
 	if(argc > 1)
 		window_context_reload(wctx, argv[1]);
 
+	debugger_init(wctx->nes);
 	while(!done)
 	{
 		if(SDL_PollEvent(&e))
@@ -610,6 +612,7 @@ int main(int argc, char * argv[])
 		}
 		window_context_update(wctx);
 	}
+	debugger_exit(wctx->nes);
 	window_context_free(wctx);
 	SDL_Quit();
 
