@@ -26,7 +26,7 @@
 #include <debugger.h>
 #include <xnes.h>
 
-#define SDL_SCREEN_SCALE	(1)
+#define SDL_SCREEN_SCALE	(4)
 
 struct window_context_t {
 	SDL_Window * window;

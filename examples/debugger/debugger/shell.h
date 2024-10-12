@@ -5,7 +5,9 @@
 extern "C" {
 #endif
 
-int shell_system(const char * cmdline);
+#include <xnes.h>
+
+int shell_system(struct xnes_ctx_t * ctx, const char * cmdline);
 
 #ifdef __cplusplus
 }

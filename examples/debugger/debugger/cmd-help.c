@@ -22,78 +22,64 @@
  * SOFTWARE.
  */
 
-#include <command.h>
+#include <slist.h>
 #include <context.h>
-#include <readline.h>
-#include <shell.h>
+#include <command.h>
 
-static char ** shell_splitstring(char * cmdline, char * delim)
+static void usage(void)
 {
-	int bufsz = 16;
-	int pos = 0;
-	char ** tokens;
-	char * tok;
-	char * p;
-
-	tokens = malloc(bufsz * sizeof(char *));
-	if(tokens)
-	{
-		tok = strtok_r(cmdline, delim, &p);
-		while(tok != NULL)
-		{
-			tokens[pos] = tok;
-			pos++;
-			if(pos >= bufsz)
-			{
-				bufsz <<= 1;
-				tokens = realloc(tokens, bufsz * sizeof(char *));
-			}
-			tok = strtok_r(NULL, delim, &p);
-		}
-		tokens[pos] = NULL;
-	}
-	return tokens;
+	shell_printf("usage:\r\n");
+	shell_printf("    help [command ...]\r\n");
 }
 
-int shell_system(struct xnes_ctx_t * ctx, const char * cmdline)
+static int do_help(struct xnes_ctx_t * ctx, int argc, char ** argv)
 {
-	int ret = 0;
+	struct command_t * pos, * n;
+	struct command_t * c;
+	struct slist_t * sl, * e;
+	int i, j, k = 0;
 
-	char * str = strdup(cmdline);
-	if(str)
+	if(argc == 1)
 	{
-		char ** cmds = shell_splitstring(str, ";");
-		if(cmds)
+		sl = slist_alloc();
+		list_for_each_entry_safe(pos, n, &__command_list, list)
 		{
-			for(int i = 0; cmds[i] != NULL; i++)
-			{
-				char ** argv = shell_splitstring(cmds[i], " \t\r\n\a");
-				if(argv)
-				{
-					int argc = 0;
-					while(argv[argc] != NULL)
-						argc++;
-					if(argc > 0)
-					{
-						struct command_t * c = search_command(argv[0]);
-						if(c)
-						{
-							ret = c->exec(ctx, argc, argv);
-						}
-						else
-						{
-							ret = -1;
-							shell_printf(" could not found '%s' command\r\n", argv[0]);
-						}
-					}
-					free(argv);
-				}
-				if(ret < 0)
-					break;
-			}
-			free(cmds);
+			j = strlen(pos->name);
+			if(j > k)
+				k = j;
+			slist_add(sl, pos, "%s", pos->name);
 		}
-		free(str);
+		slist_sort(sl);
+		slist_for_each_entry(e, sl)
+		{
+			pos = (struct command_t *)e->priv;
+			shell_printf(" %s%*s - %s\r\n", pos->name, k - strlen(pos->name), "", pos->desc);
+		}
+		slist_free(sl);
 	}
-	return ret;
+	else
+	{
+		for(i = 1; i < argc; i++)
+		{
+			c = search_command(argv[i]);
+			if(c)
+			{
+				shell_printf("%s - %s\r\n", c->name, c->desc);
+				if(c->usage)
+					c->usage();
+			}
+			else
+			{
+				shell_printf("unknown command '%s' - try 'help' for list all of commands\r\n", argv[i]);
+			}
+		}
+	}
+	return 0;
 }
+
+struct command_t cmd_help = {
+	.name	= "help",
+	.desc	= "show online help about command",
+	.usage	= usage,
+	.exec	= do_help,
+};

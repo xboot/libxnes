@@ -35,15 +35,35 @@
 
 static struct termios tconfig;
 static struct rl_buf_t * rl;
+static int debugger_step_flag	= 0;
+static int debugger_step_count	= 0;
+static uint16_t break_point		= 0x0000;
 
 static int debugger_callback(struct xnes_ctx_t * ctx)
 {
 	char * p = shell_readline(rl);
 	if(p)
 	{
-		shell_system(p);
+		shell_printf("\r\n");
+		if(p[0] != '\0')
+			shell_system(ctx, p);
 		free(p);
 		shell_printf("%s", rl->prompt);
+	}
+	if(debugger_step_flag)
+	{
+		if(debugger_step_count > 0)
+		{
+			--debugger_step_count;
+			return 0;
+		}
+		else
+			return 1;
+	}
+	else
+	{
+		if(ctx->cpu.pc == break_point)
+			return 1;
 	}
 	return 0;
 }
@@ -51,7 +71,6 @@ static int debugger_callback(struct xnes_ctx_t * ctx)
 void debugger_init(struct xnes_ctx_t * ctx)
 {
 	struct termios ta;
-
 	tcgetattr(0, &tconfig);
 	ta = tconfig;
 	ta.c_lflag &= (~ICANON & ~ECHO & ~ISIG);
@@ -60,15 +79,43 @@ void debugger_init(struct xnes_ctx_t * ctx)
 	ta.c_cc[VMIN] = 1;
 	ta.c_cc[VTIME] = 0;
 	tcsetattr(0, TCSANOW, &ta);
-
 	rl = rl_alloc("==> ");
 	xnes_set_debugger(ctx, debugger_callback);
+
+	register_command(&cmd_breakpoint);
+	register_command(&cmd_exit);
+	register_command(&cmd_help);
+	register_command(&cmd_pause);
+	register_command(&cmd_run);
+	register_command(&cmd_step);
 }
 
 void debugger_exit(struct xnes_ctx_t * ctx)
 {
+	rl_free(rl);
 	fflush(stdout);
 	tcsetattr(0, TCSANOW, &tconfig);
 
-	rl_free(rl);
+	unregister_command(&cmd_breakpoint);
+	unregister_command(&cmd_exit);
+	unregister_command(&cmd_help);
+	unregister_command(&cmd_pause);
+	unregister_command(&cmd_run);
+	unregister_command(&cmd_step);
+}
+
+void debugger_run(struct xnes_ctx_t * ctx)
+{
+	debugger_step_flag = 0;
+}
+
+void debugger_step(struct xnes_ctx_t * ctx, int step)
+{
+	debugger_step_flag = 1;
+	debugger_step_count = step > 0 ? step : 0;
+}
+
+void debugger_breakpoint(struct xnes_ctx_t * ctx, uint16_t bp)
+{
+	break_point = bp;
 }

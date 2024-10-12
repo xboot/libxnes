@@ -586,13 +586,10 @@ char * shell_readline(struct rl_buf_t * rl)
 		{
 			if(readline_handle(rl, code))
 			{
-				shell_printf("\r\n");
-				if(rl->len > 0)
-				{
-					char * utf8 = ucs4_to_utf8_alloc(rl->buf, rl->len);
-					;//rl->len = 0;
-					return utf8;
-				}
+				char * utf8 = ucs4_to_utf8_alloc(rl->buf, rl->len);
+				rl_cursor_home(rl);
+				rl_delete(rl, rl->len);
+				return utf8;
 			}
 		}
 	}
