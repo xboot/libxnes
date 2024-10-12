@@ -82,8 +82,10 @@ void debugger_init(struct xnes_ctx_t * ctx)
 	xnes_set_debugger(ctx, debugger_callback);
 
 	register_command(&cmd_breakpoint);
+	register_command(&cmd_clear);
 	register_command(&cmd_dasm);
 	register_command(&cmd_dump);
+	register_command(&cmd_echo);
 	register_command(&cmd_exit);
 	register_command(&cmd_flag);
 	register_command(&cmd_help);
@@ -100,8 +102,10 @@ void debugger_exit(struct xnes_ctx_t * ctx)
 	tcsetattr(0, TCSANOW, &tconfig);
 
 	unregister_command(&cmd_breakpoint);
+	unregister_command(&cmd_clear);
 	unregister_command(&cmd_dasm);
 	unregister_command(&cmd_dump);
+	unregister_command(&cmd_echo);
 	unregister_command(&cmd_exit);
 	unregister_command(&cmd_flag);
 	unregister_command(&cmd_help);

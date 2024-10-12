@@ -20,8 +20,10 @@ struct command_t
 
 extern struct list_head __command_list;
 extern struct command_t cmd_breakpoint;
+extern struct command_t cmd_clear;
 extern struct command_t cmd_dasm;
 extern struct command_t cmd_dump;
+extern struct command_t cmd_echo;
 extern struct command_t cmd_exit;
 extern struct command_t cmd_flag;
 extern struct command_t cmd_help;
