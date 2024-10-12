@@ -37,7 +37,7 @@ sinclude	../../src/xnes.mk
 sinclude	debugger/debugger.mk
 
 OUTPUT		:=	output
-NAME		:=	$(OUTPUT)/xnes-debugger
+NAME		:=	$(OUTPUT)/debugger
 
 INCDIRS		:=	$(patsubst %, -I %, $(sort $(INCDIRS)))
 LIBDIRS		:=	$(patsubst %, -L %, $(sort $(LIBDIRS)))
