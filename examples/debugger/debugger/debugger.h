@@ -12,7 +12,8 @@ void debugger_exit(struct xnes_ctx_t * ctx);
 
 void debugger_run(struct xnes_ctx_t * ctx);
 void debugger_step(struct xnes_ctx_t * ctx, int step);
-void debugger_breakpoint(struct xnes_ctx_t * ctx, uint16_t bp);
+void debugger_set_breakpoint(struct xnes_ctx_t * ctx, uint16_t bp);
+uint16_t debugger_get_breakpoint(struct xnes_ctx_t * ctx);
 
 #ifdef __cplusplus
 }

@@ -78,12 +78,14 @@ void debugger_init(struct xnes_ctx_t * ctx)
 	ta.c_cc[VMIN] = 1;
 	ta.c_cc[VTIME] = 0;
 	tcsetattr(0, TCSANOW, &ta);
-	rl = rl_alloc("==> ");
+	rl = rl_alloc("--> ");
 	xnes_set_debugger(ctx, debugger_callback);
 
 	register_command(&cmd_breakpoint);
+	register_command(&cmd_dasm);
 	register_command(&cmd_dump);
 	register_command(&cmd_exit);
+	register_command(&cmd_flag);
 	register_command(&cmd_help);
 	register_command(&cmd_pause);
 	register_command(&cmd_run);
@@ -97,8 +99,10 @@ void debugger_exit(struct xnes_ctx_t * ctx)
 	tcsetattr(0, TCSANOW, &tconfig);
 
 	unregister_command(&cmd_breakpoint);
+	unregister_command(&cmd_dasm);
 	unregister_command(&cmd_dump);
 	unregister_command(&cmd_exit);
+	unregister_command(&cmd_flag);
 	unregister_command(&cmd_help);
 	unregister_command(&cmd_pause);
 	unregister_command(&cmd_run);
@@ -116,7 +120,12 @@ void debugger_step(struct xnes_ctx_t * ctx, int step)
 	debugger_step_count = step > 0 ? step : 0;
 }
 
-void debugger_breakpoint(struct xnes_ctx_t * ctx, uint16_t bp)
+void debugger_set_breakpoint(struct xnes_ctx_t * ctx, uint16_t bp)
 {
 	break_point = bp;
+}
+
+uint16_t debugger_get_breakpoint(struct xnes_ctx_t * ctx)
+{
+	return break_point;
 }

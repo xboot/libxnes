@@ -5,17 +5,15 @@
 static void usage(void)
 {
 	shell_printf("usage:\r\n");
-	shell_printf("    breakpoint [address]\r\n");
+	shell_printf("    breakpoint <address>\r\n");
 }
 
 static int do_breakpoint(struct xnes_ctx_t * ctx, int argc, char ** argv)
 {
-	uint16_t addr = 0;
-
-	if(argc > 1)
-		addr = strtoul(argv[1], NULL, 0);
-	debugger_breakpoint(ctx, addr);
-
+	if(argc <= 1)
+		shell_printf("BP: %04X\r\n", debugger_get_breakpoint(ctx));
+	else
+		debugger_set_breakpoint(ctx, (uint16_t)strtoul(argv[1], NULL, 0));
 	return 0;
 }
 
