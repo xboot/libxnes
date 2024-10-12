@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include <cpu.h>
+#include <dma.h>
 #include <ppu.h>
 #include <apu.h>
 #include <controller.h>

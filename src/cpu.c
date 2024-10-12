@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <dma.h>
 #include <ppu.h>
 #include <apu.h>
 #include <controller.h>
@@ -144,7 +145,7 @@ uint8_t xnes_cpu_read8(struct xnes_cpu_t * cpu, uint16_t addr)
 	case 1:
 		return xnes_ppu_read_register(&ctx->ppu, 0x2000 | (addr & 0x7));
 
-	/* [0x4000, 0x5FFF] - APU, DMC, Joystick, Zapper, Cartridge (maybe mapper registers) */
+	/* [0x4000, 0x5FFF] - APU, DMA, Joystick, Zapper, Cartridge (maybe mapper registers) */
 	/* [0x6000, 0x7FFF] - Cartridge RAM (maybe battery-backed) */
 	/* [0x8000, 0x9FFF] - PRG ROM */
 	/* [0xA000, 0xBFFF] - PRG ROM */
@@ -153,10 +154,10 @@ uint8_t xnes_cpu_read8(struct xnes_cpu_t * cpu, uint16_t addr)
 	default:
 		switch(addr)
 		{
-		case 0x4000 ... 0x4013: /* APU */
+		case 0x4000 ... 0x4009: /* APU */
 			return xnes_apu_read_register(&ctx->apu, addr);
-		case 0x4014: /* OAMDMA */
-			return xnes_ppu_read_register(&ctx->ppu, addr);
+		case 0x4010 ... 0x4014: /* DMA */
+			return xnes_dma_read_register(&ctx->dma, addr);
 		case 0x4015: /* APU */
 			return xnes_apu_read_register(&ctx->apu, addr);
 		case 0x4016 ... 0x4017: /* CONTROLLER */
@@ -187,7 +188,7 @@ void xnes_cpu_write8(struct xnes_cpu_t * cpu, uint16_t addr, uint8_t val)
 		xnes_ppu_write_register(&ctx->ppu, 0x2000 | (addr & 0x7), val);
 		break;
 
-	/* [0x4000, 0x5FFF] - APU, DMC, Joystick, Zapper, Cartridge (maybe mapper registers) */
+	/* [0x4000, 0x5FFF] - APU, DMA, Joystick, Zapper, Cartridge (maybe mapper registers) */
 	/* [0x6000, 0x7FFF] - Cartridge RAM (maybe battery-backed) */
 	/* [0x8000, 0x9FFF] - PRG ROM */
 	/* [0xA000, 0xBFFF] - PRG ROM */
@@ -196,11 +197,11 @@ void xnes_cpu_write8(struct xnes_cpu_t * cpu, uint16_t addr, uint8_t val)
 	default:
 		switch(addr)
 		{
-		case 0x4000 ... 0x4013: /* APU */
+		case 0x4000 ... 0x4009: /* APU */
 			xnes_apu_write_register(&ctx->apu, addr, val);
 			break;
-		case 0x4014: /* OAMDMA */
-			xnes_ppu_write_register(&ctx->ppu, addr, val);
+		case 0x4010 ... 0x4014: /* DMA */
+			xnes_dma_write_register(&ctx->dma, addr, val);
 			break;
 		case 0x4015: /* APU */
 			xnes_apu_write_register(&ctx->apu, addr, val);

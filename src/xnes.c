@@ -41,6 +41,7 @@ struct xnes_ctx_t * xnes_ctx_alloc(const void * buf, size_t len)
 	}
 
 	xnes_cpu_init(&ctx->cpu, ctx);
+	xnes_dma_init(&ctx->dma, ctx);
 	xnes_ppu_init(&ctx->ppu, ctx);
 	xnes_apu_init(&ctx->apu, ctx);
 	xnes_controller_init(&ctx->ctl, ctx);
@@ -63,6 +64,7 @@ void xnes_reset(struct xnes_ctx_t * ctx)
 	if(ctx)
 	{
 		xnes_cpu_reset(&ctx->cpu);
+		xnes_dma_reset(&ctx->dma);
 		xnes_ppu_reset(&ctx->ppu);
 		xnes_apu_reset(&ctx->apu);
 		xnes_controller_reset(&ctx->ctl);

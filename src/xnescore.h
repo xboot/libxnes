@@ -32,6 +32,10 @@ struct xnes_cpu_t {
 	uint8_t interrupt;
 };
 
+struct xnes_dma_t {
+	struct xnes_ctx_t * ctx;
+};
+
 struct xnes_ppu_t {
 	struct xnes_ctx_t * ctx;
 
@@ -44,6 +48,7 @@ struct xnes_ppu_t {
 	uint8_t palette_data[32];
 	uint8_t name_table_data[2048];
 	uint8_t oam_data[256];
+	uint8_t oam_address;
 	uint32_t front_buf[256 * 240];
 	uint32_t back_buf[256 * 240];
 	uint32_t * front;
@@ -92,8 +97,6 @@ struct xnes_ppu_t {
 
 	uint8_t flag_sprite_zero_hit;
 	uint8_t flag_sprite_overflow;
-
-	uint8_t oam_address;
 
 	uint8_t buffered_data;
 };
@@ -341,6 +344,7 @@ struct xnes_cartridge_t {
 
 struct xnes_ctx_t {
 	struct xnes_cpu_t cpu;
+	struct xnes_dma_t dma;
 	struct xnes_ppu_t ppu;
 	struct xnes_apu_t apu;
 	struct xnes_controller_t ctl;

@@ -46,10 +46,6 @@ static const uint16_t noise_table[] = {
 	4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068,
 };
 
-static const uint8_t dmc_table[] = {
-	214, 190, 170, 160, 143, 127, 113, 107, 95, 80, 71, 64, 53, 42, 36, 27,
-};
-
 static const float pulse_table[31] = {
 	0.000000, 0.011609, 0.022939, 0.034001, 0.044803, 0.055355, 0.065665, 0.075741,
 	0.085591, 0.095224, 0.104645, 0.113862, 0.122882, 0.131710, 0.140353, 0.148816,
@@ -349,28 +345,6 @@ static inline uint8_t noise_output(struct xnes_apu_noise_t * n)
 		return n->envelope_volume;
 	else
 		return n->constant_volume;
-}
-
-static inline void dmc_write_control(struct xnes_apu_dmc_t * d, uint8_t value)
-{
-	d->irq = (value & 0x80) ? 1 : 0;
-	d->loop = (value & 0x40) ? 1 : 0;
-	d->tick_period = dmc_table[value & 0xf];
-}
-
-static inline void dmc_write_value(struct xnes_apu_dmc_t * d, uint8_t value)
-{
-	d->value = value & 0x7f;
-}
-
-static inline void dmc_write_address(struct xnes_apu_dmc_t * d, uint8_t value)
-{
-	d->sample_address = 0xc000 | (((uint16_t)value) << 6);
-}
-
-static inline void dmc_write_length(struct xnes_apu_dmc_t * d, uint8_t value)
-{
-	d->sample_length = (((uint16_t)value) << 4) | 0x1;
 }
 
 static inline void dmc_restart(struct xnes_apu_dmc_t * d)
@@ -711,16 +685,6 @@ uint8_t xnes_apu_read_register(struct xnes_apu_t * apu, uint16_t addr)
 		break;
 	case 0x400f: /* NOISE_HI */
 		break;
-	case 0x4010: /* DMC_FREQ */
-		break;
-	case 0x4011: /* DMC_RAW */
-		break;
-	case 0x4012: /* DMC_START */
-		break;
-	case 0x4013: /* DMC_LEN */
-		break;
-	case 0x4014: /* OAMDMA */
-		break;
 	case 0x4015: /* SND_CHN */
 		return read_status(apu);
 	default:
@@ -778,20 +742,6 @@ void xnes_apu_write_register(struct xnes_apu_t * apu, uint16_t addr, uint8_t val
 		break;
 	case 0x400f: /* NOISE_HI */
 		noise_write_length(&apu->noise, val);
-		break;
-	case 0x4010: /* DMC_FREQ */
-		dmc_write_control(&apu->dmc, val);
-		break;
-	case 0x4011: /* DMC_RAW */
-		dmc_write_value(&apu->dmc, val);
-		break;
-	case 0x4012: /* DMC_START */
-		dmc_write_address(&apu->dmc, val);
-		break;
-	case 0x4013: /* DMC_LEN */
-		dmc_write_length(&apu->dmc, val);
-		break;
-	case 0x4014: /* OAMDMA */
 		break;
 	case 0x4015: /* SND_CHN */
 		write_control(apu, val);

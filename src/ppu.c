@@ -241,21 +241,6 @@ static void ppu_write_data(struct xnes_ppu_t * ppu, uint8_t val)
 		ppu->v += 32;
 }
 
-static void ppu_write_dma(struct xnes_ppu_t * ppu, uint8_t val)
-{
-	uint16_t addr = val << 8;
-
-	for(int i = 0; i < 256; i++)
-	{
-		ppu->oam_data[ppu->oam_address] = xnes_cpu_read8(&ppu->ctx->cpu, addr);
-		ppu->oam_address++;
-		addr++;
-	}
-	ppu->ctx->cpu.stall += 513;
-	if(ppu->ctx->cpu.cycles & 0x1)
-		ppu->ctx->cpu.stall++;
-}
-
 static void ppu_increment_x(struct xnes_ppu_t * ppu)
 {
 	if((ppu->v & 0x001F) == 31)
@@ -682,8 +667,6 @@ uint8_t xnes_ppu_read_register(struct xnes_ppu_t * ppu, uint16_t addr)
 		break;
 	case 0x2007: /* PPU_DATA - read/write */
 		return ppu_read_data(ppu);
-	case 0x4014: /* OAM_DMA - write */
-		break;
 	default:
 		break;
 	}
@@ -717,9 +700,6 @@ void xnes_ppu_write_register(struct xnes_ppu_t * ppu, uint16_t addr, uint8_t val
 		break;
 	case 0x2007: /* PPU_DATA - read/write */
 		ppu_write_data(ppu, val);
-		break;
-	case 0x4014: /* OAM_DMA - write */
-		ppu_write_dma(ppu, val);
 		break;
 	default:
 		break;
