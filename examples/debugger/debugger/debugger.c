@@ -88,6 +88,7 @@ void debugger_init(struct xnes_ctx_t * ctx)
 	register_command(&cmd_flag);
 	register_command(&cmd_help);
 	register_command(&cmd_pause);
+	register_command(&cmd_reset);
 	register_command(&cmd_run);
 	register_command(&cmd_step);
 }
@@ -105,6 +106,7 @@ void debugger_exit(struct xnes_ctx_t * ctx)
 	unregister_command(&cmd_flag);
 	unregister_command(&cmd_help);
 	unregister_command(&cmd_pause);
+	unregister_command(&cmd_reset);
 	unregister_command(&cmd_run);
 	unregister_command(&cmd_step);
 }

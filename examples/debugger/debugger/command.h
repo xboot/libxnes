@@ -26,6 +26,7 @@ extern struct command_t cmd_exit;
 extern struct command_t cmd_flag;
 extern struct command_t cmd_help;
 extern struct command_t cmd_pause;
+extern struct command_t cmd_reset;
 extern struct command_t cmd_run;
 extern struct command_t cmd_step;
 
