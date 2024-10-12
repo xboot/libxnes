@@ -79,11 +79,28 @@ static const uint8_t cpu_instruction_name[256][4] = {
 	/* F0 */ "BEQ", "SBC", "KIL", "ISC", "NOP", "SBC", "INC", "ISC", "SED", "SBC", "NOP", "ISC", "NOP", "SBC", "INC", "ISC",
 };
 
-static int dasm(struct xnes_ctx_t * ctx, uint8_t pc)
+static inline uint16_t cpu_read16(struct xnes_cpu_t * cpu, uint16_t addr)
+{
+	uint8_t lo = xnes_cpu_read8(cpu, addr);
+	uint8_t hi = xnes_cpu_read8(cpu, addr + 1);
+	return ((uint16_t)hi << 8) | lo;
+}
+
+static inline uint16_t cpu_read16_indirect_bug(struct xnes_cpu_t * cpu, uint16_t addr)
+{
+	uint8_t lo = xnes_cpu_read8(cpu, addr);
+	uint8_t hi = xnes_cpu_read8(cpu, (addr & 0xff00) | ((addr + 1) & 0x00ff));
+	return ((uint16_t)hi << 8) | lo;
+}
+
+static int dasm(struct xnes_ctx_t * ctx, uint16_t pc)
 {
 	struct xnes_cpu_t * cpu = &ctx->cpu;
 	uint8_t opcode = xnes_cpu_read8(cpu, pc);
+	uint8_t mode = cpu_instruction_mode[opcode];
 	uint8_t bytes = cpu_instruction_size[opcode];
+	uint16_t addr;
+	uint8_t val;
 
 	if(bytes == 0)
 		shell_printf("%04X  %02X      ", pc, xnes_cpu_read8(cpu, pc + 0));
@@ -93,7 +110,69 @@ static int dasm(struct xnes_ctx_t * ctx, uint8_t pc)
 		shell_printf("%04X  %02X %02X   ", pc, xnes_cpu_read8(cpu, pc + 0), xnes_cpu_read8(cpu, pc + 1));
 	else if(bytes == 3)
 		shell_printf("%04X  %02X %02X %02X", pc, xnes_cpu_read8(cpu, pc + 0), xnes_cpu_read8(cpu, pc + 1), xnes_cpu_read8(cpu, pc + 2));
-	shell_printf("  %s\r\n", (char *)cpu_instruction_name[opcode]);
+	shell_printf("  %s ", (char *)cpu_instruction_name[opcode]);
+
+	switch(mode)
+	{
+	case CPU_ADDR_MODE_ABSOLUTE:
+		addr = cpu_read16(cpu, pc + 1);
+		shell_printf("$%04X", addr);
+		break;
+	case CPU_ADDR_MODE_ABSOLUTE_X:
+		addr = cpu_read16(cpu, pc + 1);
+		shell_printf("$%04X,X", addr);
+		break;
+	case CPU_ADDR_MODE_ABSOLUTE_Y:
+		addr = cpu_read16(cpu, pc + 1);
+		shell_printf("$%04X,Y", addr);
+		break;
+	case CPU_ADDR_MODE_ACCUMULATOR:
+		shell_printf("A");
+		break;
+	case CPU_ADDR_MODE_IMMEDIATE:
+		addr = pc + 1;
+		val = xnes_cpu_read8(cpu, addr);
+		shell_printf("#$%02X", val);
+		break;
+	case CPU_ADDR_MODE_IMPLIED:
+		break;
+	case CPU_ADDR_MODE_INDIRECT_X:
+		addr = (uint16_t)xnes_cpu_read8(cpu, pc + 1);
+		shell_printf("($%02X,X)", addr);
+		break;
+	case CPU_ADDR_MODE_INDIRECT:
+		addr = cpu_read16_indirect_bug(cpu, cpu_read16(cpu, pc + 1));
+		shell_printf("($%04X)", addr);
+		break;
+	case CPU_ADDR_MODE_INDIRECT_Y:
+		addr = (uint16_t)xnes_cpu_read8(cpu, pc + 1);
+		shell_printf("($%02X),Y", addr);
+		break;
+	case CPU_ADDR_MODE_RELATIVE:
+		val = xnes_cpu_read8(cpu, pc + 1);
+		if(val < 0x80)
+			addr = pc + 2 + val;
+		else
+			addr = pc + 2 + val - 0x100;
+		shell_printf("$%04X", addr);
+		break;
+	case CPU_ADDR_MODE_ZEROPAGE:
+		addr = xnes_cpu_read8(cpu, pc + 1);
+		shell_printf("$%02X", addr);
+		break;
+	case CPU_ADDR_MODE_ZEROPAGE_X:
+		addr = xnes_cpu_read8(cpu, pc + 1);
+		shell_printf("$%02X,X", addr);
+		break;
+	case CPU_ADDR_MODE_ZEROPAGE_Y:
+		addr = xnes_cpu_read8(cpu, pc + 1);
+		shell_printf("$%02X,Y", addr);
+		break;
+	default:
+		break;
+	}
+	shell_printf("\r\n");
+
 	return bytes;
 }
 
