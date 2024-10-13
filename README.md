@@ -87,6 +87,7 @@ cd examples/linux/output/
 
 * [The Chinese Discussion Posts](https://whycan.com/t_11467.html)
 * [The Nesdev Wiki](https://www.nesdev.org/wiki/Nesdev_Wiki)
+* [The 6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html)
 * [The NES Cart Database](https://nescartdb.com)
 
 ## License
