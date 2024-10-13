@@ -40,30 +40,17 @@ struct shell_context_t {
 	ssize_t (*write)(void * buf, size_t count);
 };
 
+static void linux_file_read_set_nonblock(int fd)
+{
+	int flags = fcntl(fd, F_GETFL);
+	if(flags != -1)
+		fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+}
+
 static ssize_t linux_file_read(int fd, void * buf, size_t count)
 {
 	ssize_t ret = read(fd, buf, count);
 	return (ret > 0) ? ret: 0;
-}
-
-static ssize_t linux_file_read_nonblock(int fd, void * buf, size_t count)
-{
-	ssize_t ret;
-	int flags;
-
-	flags = fcntl(fd, F_GETFL);
-	if(flags == -1)
-		return 0;
-
-	if(fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1)
-		return 0;
-
-	ret = linux_file_read(fd, buf, count);
-
-	if(fcntl(fd, F_SETFL, flags) == -1)
-		return 0;
-
-	return ret;
 }
 
 static ssize_t linux_file_write(int fd, const void * buf, size_t count)
@@ -74,7 +61,7 @@ static ssize_t linux_file_write(int fd, const void * buf, size_t count)
 
 static ssize_t shell_stdio_read(void * buf, size_t count)
 {
-	return linux_file_read_nonblock(fileno(stdin), buf, count);
+	return linux_file_read(fileno(stdin), buf, count);
 }
 
 static ssize_t shell_stdio_write(void * buf, size_t count)
@@ -95,6 +82,7 @@ static struct shell_context_t * shell_context_get(void)
 			ctx->history_current = &ctx->history_list;
 			ctx->read = shell_stdio_read;
 			ctx->write = shell_stdio_write;
+			linux_file_read_set_nonblock(fileno(stdin));
 		}
 	}
 	return ctx;
