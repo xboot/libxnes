@@ -9,6 +9,7 @@ extern "C" {
 
 void debugger_init(struct xnes_ctx_t * ctx);
 void debugger_exit(struct xnes_ctx_t * ctx);
+void debugger_install(struct xnes_ctx_t * ctx);
 
 void debugger_run(struct xnes_ctx_t * ctx);
 void debugger_step(struct xnes_ctx_t * ctx, int step);

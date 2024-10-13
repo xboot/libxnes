@@ -202,6 +202,7 @@ static void window_context_reload(struct window_context_t * wctx, const char * f
 			{
 				SDL_ClearQueuedAudio(wctx->audio);
 				xnes_set_audio(wctx->nes, wctx, window_audio_callback, wctx->havespec.freq);
+				debugger_install(wctx->nes);
 			}
 			free(buf);
 		}
@@ -214,10 +215,9 @@ int main(int argc, char * argv[])
 	SDL_Event e;
 	int done = 0;
 
+	debugger_init(wctx->nes);
 	if(argc > 1)
 		window_context_reload(wctx, argv[1]);
-
-	debugger_init(wctx->nes);
 	while(!done)
 	{
 		if(SDL_PollEvent(&e))

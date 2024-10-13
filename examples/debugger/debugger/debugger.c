@@ -79,7 +79,6 @@ void debugger_init(struct xnes_ctx_t * ctx)
 	ta.c_cc[VTIME] = 0;
 	tcsetattr(0, TCSANOW, &ta);
 	rl = rl_alloc("--> ");
-	xnes_set_debugger(ctx, debugger_callback);
 
 	register_command(&cmd_breakpoint);
 	register_command(&cmd_clear);
@@ -113,6 +112,11 @@ void debugger_exit(struct xnes_ctx_t * ctx)
 	unregister_command(&cmd_reset);
 	unregister_command(&cmd_run);
 	unregister_command(&cmd_step);
+}
+
+void debugger_install(struct xnes_ctx_t * ctx)
+{
+	xnes_set_debugger(ctx, debugger_callback);
 }
 
 void debugger_run(struct xnes_ctx_t * ctx)
