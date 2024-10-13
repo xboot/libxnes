@@ -595,9 +595,9 @@ static inline int cpu_bpl(struct xnes_cpu_t * cpu, uint16_t addr)
  */
 static inline void cpu_brk(struct xnes_cpu_t * cpu)
 {
-	cpu_stack_push16(cpu, cpu->pc);
+	cpu_stack_push16(cpu, cpu->pc + 1);
 	cpu_php(cpu);
-	cpu_sei(cpu);
+	cpu->p |= XNES_CPU_P_I;
 	cpu->pc = cpu_read16(cpu, 0xfffe);
 }
 
