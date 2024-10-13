@@ -118,7 +118,7 @@ uint64_t xnes_step_frame(struct xnes_ctx_t * ctx)
 	return (uint64_t)ctx->cartridge->cpu_period_adjusted * cycles;
 }
 
-int xnes_state_length(struct xnes_ctx_t * ctx)
+static int xnes_state_length(struct xnes_ctx_t * ctx)
 {
 	int len = 0;
 
@@ -126,7 +126,6 @@ int xnes_state_length(struct xnes_ctx_t * ctx)
 	len += sizeof(struct xnes_dma_t);
 	len += sizeof(struct xnes_ppu_t);
 	len += sizeof(struct xnes_apu_t);
-	len += sizeof(struct xnes_controller_t);
 	len += sizeof(struct xnes_cartridge_t);
 	len += ctx->cartridge->prg_ram_size;
 	len += ctx->cartridge->prg_nvram_size;
@@ -136,7 +135,7 @@ int xnes_state_length(struct xnes_ctx_t * ctx)
 	return len;
 }
 
-void xnes_state_save(struct xnes_ctx_t * ctx, void * buf)
+static void xnes_state_save(struct xnes_ctx_t * ctx, void * buf)
 {
 	char * p = buf;
 	int l;
@@ -155,10 +154,6 @@ void xnes_state_save(struct xnes_ctx_t * ctx, void * buf)
 
 	l = sizeof(struct xnes_apu_t);
 	xnes_memcpy(p, &ctx->apu, l);
-	p += l;
-
-	l = sizeof(struct xnes_controller_t);
-	xnes_memcpy(p, &ctx->ctl, l);
 	p += l;
 
 	l = sizeof(struct xnes_cartridge_t);
@@ -194,10 +189,12 @@ void xnes_state_save(struct xnes_ctx_t * ctx, void * buf)
 	}
 }
 
-void xnes_state_restore(struct xnes_ctx_t * ctx, void * buf)
+static void xnes_state_restore(struct xnes_ctx_t * ctx, void * buf)
 {
 	char * p = buf;
 	int l;
+
+	xnes_controller_reset(&ctx->ctl);
 
 	l = sizeof(struct xnes_cpu_t);
 	xnes_memcpy(&ctx->cpu, p, l);
@@ -213,10 +210,6 @@ void xnes_state_restore(struct xnes_ctx_t * ctx, void * buf)
 
 	l = sizeof(struct xnes_apu_t);
 	xnes_memcpy(&ctx->apu, p, l);
-	p += l;
-
-	l = sizeof(struct xnes_controller_t);
-	xnes_memcpy(&ctx->ctl, p, l);
 	p += l;
 
 	l = sizeof(struct xnes_cartridge_t);
@@ -249,5 +242,65 @@ void xnes_state_restore(struct xnes_ctx_t * ctx, void * buf)
 	{
 		xnes_memcpy(ctx->cartridge->chr_nvram, p, l);
 		p += l;
+	}
+}
+
+struct xnes_state_t * xnes_state_alloc(struct xnes_ctx_t * ctx, int count)
+{
+	if(ctx && (count > 0))
+	{
+		int length = xnes_state_length(ctx);
+		if(length > 0)
+		{
+			struct xnes_state_t * state = xnes_malloc(sizeof(struct xnes_state_t) + length * count);
+			if(state)
+			{
+				state->ctx = ctx;
+				state->buffer = (unsigned char *)state + sizeof(struct xnes_state_t);
+				state->length = length;
+				state->count = count;
+				state->in = 0;
+				state->out = 0;
+				return state;
+			}
+		}
+	}
+	return NULL;
+}
+
+void xnes_state_free(struct xnes_state_t * state)
+{
+	if(state)
+		xnes_free(state);
+}
+
+void xnes_state_push(struct xnes_state_t * state)
+{
+	if(state)
+	{
+		if((state->in - state->out) == state->count)
+			++state->out;
+		xnes_state_save(state->ctx, state->buffer + state->length * (state->in % state->count));
+		state->in++;
+	}
+}
+
+void xnes_state_pop(struct xnes_state_t * state)
+{
+	if(state)
+	{
+		if((state->in - state->out) > 0)
+		{
+			if(state->in > 0)
+			{
+				state->in--;
+			}
+			else
+			{
+				state->in = (state->in + 0xffffffff - 1) % state->count;
+				state->out = state->out % state->count;
+			}
+			xnes_state_restore(state->ctx, state->buffer + state->length * (state->in % state->count));
+		}
 	}
 }

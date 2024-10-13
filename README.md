@@ -63,10 +63,8 @@ cd examples/linux/output/
 | Description | Key |
 | :--- | ---- |
 | RESET | ESC    |
-| SLOW SPEED | F1       |
-| FAST SPEED | F2       |
-| SAVE GAME | F5     |
-| RESTORE GAME | F6   |
+| REWIND | F1       |
+| SLOW SPEED | F2       |
 
 ## Joystick
 
@@ -80,8 +78,8 @@ cd examples/linux/output/
 | B    | B        | B   |
 | SELECT | Select | Select |
 | START | Start | Start |
-| SLOW SPEED | L      |L|
-| FAST SPEED | R      |R|
+| REWIND | L      |L|
+| SLOW SPEED | R      |R|
 
 ## Links
 

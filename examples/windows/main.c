@@ -40,7 +40,8 @@ struct window_context_t {
 	int height;
 
 	struct xnes_ctx_t * nes;
-	void * state;
+	struct xnes_state_t * state;
+	int rewind;
 	uint64_t timestamp;
 	uint64_t elapsed;
 };
@@ -87,6 +88,7 @@ static struct window_context_t * window_context_alloc(void)
 
 	wctx->nes = NULL;
 	wctx->state = NULL;
+	wctx->rewind = 0;
 	wctx->timestamp = ktime_get();
 	wctx->elapsed = 0;
 
@@ -100,7 +102,7 @@ static void window_context_free(struct window_context_t * wctx)
 		if(wctx->nes)
 			xnes_ctx_free(wctx->nes);
 		if(wctx->state)
-			free(wctx->state);
+			xnes_state_free(wctx->state);
 		if(wctx->joy[0])
 		{
 			SDL_JoystickClose(wctx->joy[0]);
@@ -124,34 +126,58 @@ static void window_context_free(struct window_context_t * wctx)
 	}
 }
 
-static void window_context_update(struct window_context_t * wctx)
+static void window_context_screen_refresh(struct window_context_t * wctx)
 {
-	if(wctx->nes && ((ktime_get() - wctx->timestamp) >= wctx->elapsed))
+	uint32_t * fb = wctx->surface->pixels;
+	for(int y = 0; y < 240; y++)
 	{
-		wctx->timestamp = ktime_get();
-		wctx->elapsed = xnes_step_frame(wctx->nes);
-		uint32_t * fb = wctx->surface->pixels;
-		for(int y = 0; y < 240; y++)
+		for(int x = 0; x < 256; x++)
 		{
-			for(int x = 0; x < 256; x++)
+			uint32_t c = wctx->nes->ppu.front[(y * 256) + x];
+			int p = ((y * SDL_SCREEN_SCALE) * (256 * SDL_SCREEN_SCALE)) + x * SDL_SCREEN_SCALE;
+			for(int j = 0; j < SDL_SCREEN_SCALE; j++)
 			{
-				uint32_t c = wctx->nes->ppu.front[(y * 256) + x];
-				int p = ((y * SDL_SCREEN_SCALE) * (256 * SDL_SCREEN_SCALE)) + x * SDL_SCREEN_SCALE;
-				for(int j = 0; j < SDL_SCREEN_SCALE; j++)
-				{
-					for(int i = 0; i < SDL_SCREEN_SCALE; i++)
-						fb[p + i] = c;
-					p += (256 * SDL_SCREEN_SCALE);
-				}
+				for(int i = 0; i < SDL_SCREEN_SCALE; i++)
+					fb[p + i] = c;
+				p += (256 * SDL_SCREEN_SCALE);
 			}
 		}
-		SDL_BlitSurface(wctx->surface, NULL, wctx->screen, NULL);
-		SDL_UpdateWindowSurface(wctx->window);
+	}
+	SDL_BlitSurface(wctx->surface, NULL, wctx->screen, NULL);
+	SDL_UpdateWindowSurface(wctx->window);
+}
+
+static void window_context_update(struct window_context_t * wctx)
+{
+	if(wctx->nes)
+	{
+		if(wctx->rewind)
+		{
+			if((ktime_get() - wctx->timestamp) >= wctx->elapsed)
+			{
+				wctx->timestamp = ktime_get();
+				wctx->elapsed = 16666666;
+				xnes_state_pop(wctx->state);
+				window_context_screen_refresh(wctx);
+			}
+			else
+				SDL_Delay(1);
+		}
+		else
+		{
+			if((ktime_get() - wctx->timestamp) >= wctx->elapsed)
+			{
+				wctx->timestamp = ktime_get();
+				wctx->elapsed = xnes_step_frame(wctx->nes);
+				window_context_screen_refresh(wctx);
+				xnes_state_push(wctx->state);
+			}
+			else
+				SDL_Delay(1);
+		}
 	}
 	else
-	{
 		SDL_Delay(1);
-	}
 }
 
 static void * file_load(const char * filename, uint64_t * len)
@@ -211,8 +237,8 @@ static void window_context_reload(struct window_context_t * wctx, const char * f
 			if(wctx->nes)
 			{
 				if(wctx->state)
-					free(wctx->state);
-				wctx->state = malloc(xnes_state_length(wctx->nes));
+					xnes_state_free(wctx->state);
+				wctx->state = xnes_state_alloc(wctx->nes, 60 * 30);
 
 				SDL_ClearQueuedAudio(wctx->audio);
 				xnes_set_audio(wctx->nes, wctx, window_audio_callback, wctx->havespec.freq);
@@ -304,19 +330,11 @@ int main(int argc, char * argv[])
 						break;
 
 					case SDLK_F1:
-						xnes_set_speed(wctx->nes, 0.5);
+						wctx->rewind = 1;
 						break;
 
 					case SDLK_F2:
-						xnes_set_speed(wctx->nes, 2.0);
-						break;
-
-					case SDLK_F5:
-						xnes_state_save(wctx->nes, wctx->state);
-						break;
-
-					case SDLK_F6:
-						xnes_state_restore(wctx->nes, wctx->state);
+						xnes_set_speed(wctx->nes, 0.5);
 						break;
 
 					case SDLK_w:
@@ -378,17 +396,11 @@ int main(int argc, char * argv[])
 					switch(e.key.keysym.sym)
 					{
 					case SDLK_F1:
-						xnes_set_speed(wctx->nes, 1.0);
+						wctx->rewind = 0;
 						break;
 
 					case SDLK_F2:
 						xnes_set_speed(wctx->nes, 1.0);
-						break;
-
-					case SDLK_F5:
-						break;
-
-					case SDLK_F6:
 						break;
 
 					case SDLK_w:
@@ -515,10 +527,10 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
 							break;
 						case 4: /* L */
-							xnes_set_speed(wctx->nes, 0.5);
+							wctx->rewind = 1;
 							break;
 						case 5: /* R */
-							xnes_set_speed(wctx->nes, 2.0);
+							xnes_set_speed(wctx->nes, 0.5);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
@@ -547,10 +559,10 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
 							break;
 						case 4: /* L */
-							xnes_set_speed(wctx->nes, 0.5);
+							wctx->rewind = 1;
 							break;
 						case 5: /* R */
-							xnes_set_speed(wctx->nes, 2.0);
+							xnes_set_speed(wctx->nes, 0.5);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
@@ -582,7 +594,7 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
 							break;
 						case 4: /* L */
-							xnes_set_speed(wctx->nes, 1.0);
+							wctx->rewind = 0;
 							break;
 						case 5: /* R */
 							xnes_set_speed(wctx->nes, 1.0);
@@ -614,7 +626,7 @@ int main(int argc, char * argv[])
 							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
 							break;
 						case 4: /* L */
-							xnes_set_speed(wctx->nes, 1.0);
+							wctx->rewind = 0;
 							break;
 						case 5: /* R */
 							xnes_set_speed(wctx->nes, 1.0);
