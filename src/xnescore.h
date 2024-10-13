@@ -22,7 +22,6 @@ enum {
 
 struct xnes_cpu_t {
 	struct xnes_ctx_t * ctx;
-	int (*debugger)(struct xnes_ctx_t *);
 
 	uint8_t ram[2048];
 	uint64_t cycles;
@@ -34,6 +33,11 @@ struct xnes_cpu_t {
 	uint8_t y;		/* index register y */
 	uint8_t p;		/* processor status */
 	uint8_t interrupt;
+
+	/*
+	 * debugger callback, cpu will be paused when return true.
+	 */
+	int (*debugger)(struct xnes_ctx_t *);
 };
 
 struct xnes_dma_t {
