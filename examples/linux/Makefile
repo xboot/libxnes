@@ -29,8 +29,8 @@ LIBS 		:=
 INCDIRS		:=	.
 SRCDIRS		:=	.
 
-CFLAGS		+=	$(shell sdl2-config --cflags)
-CXXFLAGS	+=	$(shell sdl2-config --cflags)
+CFLAGS		+=	$(shell sdl2-config --cflags) -D_GNU_SOURCE
+CXXFLAGS	+=	$(shell sdl2-config --cflags) -D_GNU_SOURCE
 LIBDIRS		+=
 LIBS		+=	$(shell sdl2-config --libs)
 sinclude	../../src/xnes.mk

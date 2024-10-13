@@ -39,6 +39,7 @@ struct window_context_t {
 	int height;
 
 	struct xnes_ctx_t * nes;
+	void * state;
 	uint64_t timestamp;
 	uint64_t elapsed;
 };
@@ -84,6 +85,7 @@ static struct window_context_t * window_context_alloc(void)
 	SDL_PauseAudioDevice(wctx->audio, 0);
 
 	wctx->nes = NULL;
+	wctx->state = NULL;
 	wctx->timestamp = ktime_get();
 	wctx->elapsed = 0;
 
@@ -96,6 +98,8 @@ static void window_context_free(struct window_context_t * wctx)
 	{
 		if(wctx->nes)
 			xnes_ctx_free(wctx->nes);
+		if(wctx->state)
+			free(wctx->state);
 		if(wctx->joy[0])
 		{
 			SDL_JoystickClose(wctx->joy[0]);
@@ -199,6 +203,10 @@ static void window_context_reload(struct window_context_t * wctx, const char * f
 			wctx->nes = xnes_ctx_alloc(buf, len);
 			if(wctx->nes)
 			{
+				if(wctx->state)
+					free(wctx->state);
+				wctx->state = malloc(xnes_state_length(wctx->nes));
+
 				SDL_ClearQueuedAudio(wctx->audio);
 				xnes_set_audio(wctx->nes, wctx, window_audio_callback, wctx->havespec.freq);
 			}
@@ -215,7 +223,6 @@ int main(int argc, char * argv[])
 
 	if(argc > 1)
 		window_context_reload(wctx, argv[1]);
-
 	while(!done)
 	{
 		if(SDL_PollEvent(&e))
@@ -297,6 +304,14 @@ int main(int argc, char * argv[])
 						xnes_set_speed(wctx->nes, 2.0);
 						break;
 
+					case SDLK_F5:
+						xnes_state_save(wctx->nes, wctx->state);
+						break;
+
+					case SDLK_F6:
+						xnes_state_restore(wctx->nes, wctx->state);
+						break;
+
 					case SDLK_w:
 						xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_UP, 0);
 						break;
@@ -361,6 +376,12 @@ int main(int argc, char * argv[])
 
 					case SDLK_F2:
 						xnes_set_speed(wctx->nes, 1.0);
+						break;
+
+					case SDLK_F5:
+						break;
+
+					case SDLK_F6:
 						break;
 
 					case SDLK_w:
