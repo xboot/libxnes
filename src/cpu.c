@@ -154,7 +154,7 @@ uint8_t xnes_cpu_read8(struct xnes_cpu_t * cpu, uint16_t addr)
 	default:
 		switch(addr)
 		{
-		case 0x4000 ... 0x4009: /* APU */
+		case 0x4000 ... 0x400f: /* APU */
 			return xnes_apu_read_register(&ctx->apu, addr);
 		case 0x4010 ... 0x4014: /* DMA */
 			return xnes_dma_read_register(&ctx->dma, addr);
@@ -197,7 +197,7 @@ void xnes_cpu_write8(struct xnes_cpu_t * cpu, uint16_t addr, uint8_t val)
 	default:
 		switch(addr)
 		{
-		case 0x4000 ... 0x4009: /* APU */
+		case 0x4000 ... 0x400f: /* APU */
 			xnes_apu_write_register(&ctx->apu, addr, val);
 			break;
 		case 0x4010 ... 0x4014: /* DMA */
