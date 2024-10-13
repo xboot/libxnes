@@ -118,11 +118,136 @@ uint64_t xnes_step_frame(struct xnes_ctx_t * ctx)
 	return (uint64_t)ctx->cartridge->cpu_period_adjusted * cycles;
 }
 
-int xnes_save(struct xnes_ctx_t * ctx, void * buf)
+int xnes_state_length(struct xnes_ctx_t * ctx)
 {
-	return 0;
+	int len = 0;
+
+	len += sizeof(struct xnes_cpu_t);
+	len += sizeof(struct xnes_dma_t);
+	len += sizeof(struct xnes_ppu_t);
+	len += sizeof(struct xnes_apu_t);
+	len += sizeof(struct xnes_controller_t);
+	len += sizeof(struct xnes_cartridge_t);
+	len += ctx->cartridge->prg_ram_size;
+	len += ctx->cartridge->prg_nvram_size;
+	len += ctx->cartridge->chr_ram_size;
+	len += ctx->cartridge->chr_nvram_size;
+
+	return len;
 }
 
-void xnes_restore(struct xnes_ctx_t * ctx, void * buf, int len)
+void xnes_state_save(struct xnes_ctx_t * ctx, void * buf)
 {
+	char * p = buf;
+	int l;
+
+	l = sizeof(struct xnes_cpu_t);
+	xnes_memcpy(p, &ctx->cpu, l);
+	p += l;
+
+	l = sizeof(struct xnes_dma_t);
+	xnes_memcpy(p, &ctx->dma, l);
+	p += l;
+
+	l = sizeof(struct xnes_ppu_t);
+	xnes_memcpy(p, &ctx->ppu, l);
+	p += l;
+
+	l = sizeof(struct xnes_apu_t);
+	xnes_memcpy(p, &ctx->apu, l);
+	p += l;
+
+	l = sizeof(struct xnes_controller_t);
+	xnes_memcpy(p, &ctx->ctl, l);
+	p += l;
+
+	l = sizeof(struct xnes_cartridge_t);
+	xnes_memcpy(p, ctx->cartridge, l);
+	p += l;
+
+	l = ctx->cartridge->prg_ram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(p, ctx->cartridge->prg_ram, l);
+		p += l;
+	}
+
+	l = ctx->cartridge->prg_nvram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(p, ctx->cartridge->prg_nvram, l);
+		p += l;
+	}
+
+	l = ctx->cartridge->chr_ram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(p, ctx->cartridge->chr_ram, l);
+		p += l;
+	}
+
+	l = ctx->cartridge->chr_nvram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(p, ctx->cartridge->chr_nvram, l);
+		p += l;
+	}
+}
+
+void xnes_state_restore(struct xnes_ctx_t * ctx, void * buf)
+{
+	char * p = buf;
+	int l;
+
+	l = sizeof(struct xnes_cpu_t);
+	xnes_memcpy(&ctx->cpu, p, l);
+	p += l;
+
+	l = sizeof(struct xnes_dma_t);
+	xnes_memcpy(&ctx->dma, p, l);
+	p += l;
+
+	l = sizeof(struct xnes_ppu_t);
+	xnes_memcpy(&ctx->ppu, p, l);
+	p += l;
+
+	l = sizeof(struct xnes_apu_t);
+	xnes_memcpy(&ctx->apu, p, l);
+	p += l;
+
+	l = sizeof(struct xnes_controller_t);
+	xnes_memcpy(&ctx->ctl, p, l);
+	p += l;
+
+	l = sizeof(struct xnes_cartridge_t);
+	xnes_memcpy(ctx->cartridge, p, l);
+	p += l;
+
+	l = ctx->cartridge->prg_ram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(ctx->cartridge->prg_ram, p, l);
+		p += l;
+	}
+
+	l = ctx->cartridge->prg_nvram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(ctx->cartridge->prg_nvram, p, l);
+		p += l;
+	}
+
+	l = ctx->cartridge->chr_ram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(ctx->cartridge->chr_ram, p, l);
+		p += l;
+	}
+
+	l = ctx->cartridge->chr_nvram_size;
+	if(l > 0)
+	{
+		xnes_memcpy(ctx->cartridge->chr_nvram, p, l);
+		p += l;
+	}
 }
