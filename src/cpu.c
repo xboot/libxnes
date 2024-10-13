@@ -73,7 +73,7 @@ static const uint8_t cpu_instruction_mode[256] = {
 
 static const uint8_t cpu_instruction_size[256] = {
 	      /* 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F */
-	/* 00 */ 1, 2, 0, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
+	/* 00 */ 2, 2, 0, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
 	/* 10 */ 2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3,
 	/* 20 */ 3, 2, 0, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
 	/* 30 */ 2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3,
@@ -595,7 +595,7 @@ static inline int cpu_bpl(struct xnes_cpu_t * cpu, uint16_t addr)
  */
 static inline void cpu_brk(struct xnes_cpu_t * cpu)
 {
-	cpu_stack_push16(cpu, cpu->pc + 1);
+	cpu_stack_push16(cpu, cpu->pc);
 	cpu_php(cpu);
 	cpu->p |= XNES_CPU_P_I;
 	cpu->pc = cpu_read16(cpu, 0xfffe);
