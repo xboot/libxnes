@@ -63,8 +63,9 @@ cd examples/linux/output/
 | Description | Key |
 | :--- | ---- |
 | RESET | ESC    |
-| REWIND | F1       |
-| SLOW SPEED | F2       |
+| SLOW SPEED | F1       |
+| FAST SPEED | F2       |
+| REWIND | R       |
 
 ## Joystick
 
@@ -79,7 +80,7 @@ cd examples/linux/output/
 | SELECT | Select | Select |
 | START | Start | Start |
 | REWIND | L      |L|
-| SLOW SPEED | R      |R|
+| FAST SPEED | R      |R|
 
 ## Links
 

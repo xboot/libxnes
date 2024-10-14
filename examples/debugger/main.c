@@ -326,11 +326,15 @@ int main(int argc, char * argv[])
 						break;
 
 					case SDLK_F1:
-						wctx->rewind = 1;
+						xnes_set_speed(wctx->nes, 0.5);
 						break;
 
 					case SDLK_F2:
-						xnes_set_speed(wctx->nes, 0.5);
+						xnes_set_speed(wctx->nes, 2.0);
+						break;
+
+					case SDLK_r:
+						wctx->rewind = 1;
 						break;
 
 					case SDLK_w:
@@ -392,11 +396,15 @@ int main(int argc, char * argv[])
 					switch(e.key.keysym.sym)
 					{
 					case SDLK_F1:
-						wctx->rewind = 0;
+						xnes_set_speed(wctx->nes, 1.0);
 						break;
 
 					case SDLK_F2:
 						xnes_set_speed(wctx->nes, 1.0);
+						break;
+
+					case SDLK_r:
+						wctx->rewind = 0;
 						break;
 
 					case SDLK_w:
@@ -526,7 +534,7 @@ int main(int argc, char * argv[])
 							wctx->rewind = 1;
 							break;
 						case 5: /* R */
-							xnes_set_speed(wctx->nes, 0.5);
+							xnes_set_speed(wctx->nes, 2.0);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
@@ -558,7 +566,7 @@ int main(int argc, char * argv[])
 							wctx->rewind = 1;
 							break;
 						case 5: /* R */
-							xnes_set_speed(wctx->nes, 0.5);
+							xnes_set_speed(wctx->nes, 2.0);
 							break;
 						case 8: /* Select */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
