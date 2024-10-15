@@ -483,6 +483,18 @@ int main(int argc, char * argv[])
 							else
 								xnes_controller_joystick_p1(&wctx->nes->ctl, 0, XNES_JOYSTICK_UP | XNES_JOYSTICK_DOWN);
 							break;
+						case 2:
+							if(e.jaxis.value < -3200)
+								xnes_set_speed(wctx->nes, 1.0);
+							else if(e.jaxis.value > 3200)
+								xnes_set_speed(wctx->nes, 0.5);
+							break;
+						case 5:
+							if(e.jaxis.value < -3200)
+								xnes_set_speed(wctx->nes, 1.0);
+							else if(e.jaxis.value > 3200)
+								xnes_set_speed(wctx->nes, 2.0);
+							break;
 						default:
 							break;
 						}
@@ -507,6 +519,49 @@ int main(int argc, char * argv[])
 							else
 								xnes_controller_joystick_p2(&wctx->nes->ctl, 0, XNES_JOYSTICK_UP | XNES_JOYSTICK_DOWN);
 							break;
+						case 2:
+							if(e.jaxis.value < -3200)
+								xnes_set_speed(wctx->nes, 1.0);
+							else if(e.jaxis.value > 3200)
+								xnes_set_speed(wctx->nes, 0.5);
+							break;
+						case 5:
+							if(e.jaxis.value < -3200)
+								xnes_set_speed(wctx->nes, 1.0);
+							else if(e.jaxis.value > 3200)
+								xnes_set_speed(wctx->nes, 2.0);
+							break;
+						default:
+							break;
+						}
+					}
+					break;
+
+				case SDL_JOYHATMOTION:
+					if(e.jhat.which == SDL_JoystickInstanceID(wctx->joy[0]))
+					{
+						switch(e.jhat.hat)
+						{
+						case 0:
+							xnes_controller_joystick_p1(&wctx->nes->ctl, (e.jhat.value & 0x8) ? XNES_JOYSTICK_LEFT : 0, (e.jhat.value & 0x8) ? 0 : XNES_JOYSTICK_LEFT);
+							xnes_controller_joystick_p1(&wctx->nes->ctl, (e.jhat.value & 0x4) ? XNES_JOYSTICK_DOWN : 0, (e.jhat.value & 0x4) ? 0 : XNES_JOYSTICK_DOWN);
+							xnes_controller_joystick_p1(&wctx->nes->ctl, (e.jhat.value & 0x2) ? XNES_JOYSTICK_RIGHT : 0, (e.jhat.value & 0x2) ? 0 : XNES_JOYSTICK_RIGHT);
+							xnes_controller_joystick_p1(&wctx->nes->ctl, (e.jhat.value & 0x1) ? XNES_JOYSTICK_UP : 0, (e.jhat.value & 0x1) ? 0 : XNES_JOYSTICK_UP);
+							break;
+						default:
+							break;
+						}
+					}
+					else if(e.jhat.which == SDL_JoystickInstanceID(wctx->joy[1]))
+					{
+						switch(e.jhat.hat)
+						{
+						case 0:
+							xnes_controller_joystick_p2(&wctx->nes->ctl, (e.jhat.value & 0x8) ? XNES_JOYSTICK_LEFT : 0, (e.jhat.value & 0x8) ? 0 : XNES_JOYSTICK_LEFT);
+							xnes_controller_joystick_p2(&wctx->nes->ctl, (e.jhat.value & 0x4) ? XNES_JOYSTICK_DOWN : 0, (e.jhat.value & 0x4) ? 0 : XNES_JOYSTICK_DOWN);
+							xnes_controller_joystick_p2(&wctx->nes->ctl, (e.jhat.value & 0x2) ? XNES_JOYSTICK_RIGHT : 0, (e.jhat.value & 0x2) ? 0 : XNES_JOYSTICK_RIGHT);
+							xnes_controller_joystick_p2(&wctx->nes->ctl, (e.jhat.value & 0x1) ? XNES_JOYSTICK_UP : 0, (e.jhat.value & 0x1) ? 0 : XNES_JOYSTICK_UP);
+							break;
 						default:
 							break;
 						}
@@ -514,64 +569,64 @@ int main(int argc, char * argv[])
 					break;
 
 				case SDL_JOYBUTTONDOWN:
-					if(e.jaxis.which == SDL_JoystickInstanceID(wctx->joy[0]))
+					if(e.jbutton.which == SDL_JoystickInstanceID(wctx->joy[0]))
 					{
 						switch(e.jbutton.button)
 						{
-						case 0: /* X */
-							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, XNES_JOYSTICK_A, 0);
+						case 0: /* B */
+							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
 							break;
 						case 1: /* A */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_A, 0);
 							break;
-						case 2: /* B */
-							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
-							break;
-						case 3: /* Y */
+						case 2: /* Y */
 							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
+							break;
+						case 3: /* X */
+							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, XNES_JOYSTICK_A, 0);
 							break;
 						case 4: /* L */
 							wctx->rewind = 1;
 							break;
 						case 5: /* R */
-							xnes_set_speed(wctx->nes, 2.0);
+							xnes_set_speed(wctx->nes, 0.5);
 							break;
-						case 8: /* Select */
+						case 6: /* Select */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
 							break;
-						case 9: /* Start */
+						case 7: /* Start */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, XNES_JOYSTICK_START, 0);
 							break;
 						default:
 							break;
 						}
 					}
-					else if(e.jaxis.which == SDL_JoystickInstanceID(wctx->joy[1]))
+					else if(e.jbutton.which == SDL_JoystickInstanceID(wctx->joy[1]))
 					{
 						switch(e.jbutton.button)
 						{
-						case 0: /* X */
-							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, XNES_JOYSTICK_A, 0);
+						case 0: /* B */
+							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
 							break;
 						case 1: /* A */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_A, 0);
 							break;
-						case 2: /* B */
-							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
-							break;
-						case 3: /* Y */
+						case 2: /* Y */
 							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, XNES_JOYSTICK_B, 0);
+							break;
+						case 3: /* X */
+							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, XNES_JOYSTICK_A, 0);
 							break;
 						case 4: /* L */
 							wctx->rewind = 1;
 							break;
 						case 5: /* R */
-							xnes_set_speed(wctx->nes, 2.0);
+							xnes_set_speed(wctx->nes, 0.5);
 							break;
-						case 8: /* Select */
+						case 6: /* Select */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_SELECT, 0);
 							break;
-						case 9: /* Start */
+						case 7: /* Start */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, XNES_JOYSTICK_START, 0);
 							break;
 						default:
@@ -581,21 +636,21 @@ int main(int argc, char * argv[])
 					break;
 
 				case SDL_JOYBUTTONUP:
-					if(e.jaxis.which == SDL_JoystickInstanceID(wctx->joy[0]))
+					if(e.jbutton.which == SDL_JoystickInstanceID(wctx->joy[0]))
 					{
 						switch(e.jbutton.button)
 						{
-						case 0: /* X */
-							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_A);
+						case 0: /* B */
+							xnes_controller_joystick_p1(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
 							break;
 						case 1: /* A */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, 0, XNES_JOYSTICK_A);
 							break;
-						case 2: /* B */
-							xnes_controller_joystick_p1(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
-							break;
-						case 3: /* Y */
+						case 2: /* Y */
 							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
+							break;
+						case 3: /* X */
+							xnes_controller_joystick_p1_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_A);
 							break;
 						case 4: /* L */
 							wctx->rewind = 0;
@@ -603,31 +658,31 @@ int main(int argc, char * argv[])
 						case 5: /* R */
 							xnes_set_speed(wctx->nes, 1.0);
 							break;
-						case 8: /* Select */
+						case 6: /* Select */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, 0, XNES_JOYSTICK_SELECT);
 							break;
-						case 9: /* Start */
+						case 7: /* Start */
 							xnes_controller_joystick_p1(&wctx->nes->ctl, 0, XNES_JOYSTICK_START);
 							break;
 						default:
 							break;
 						}
 					}
-					else if(e.jaxis.which == SDL_JoystickInstanceID(wctx->joy[1]))
+					else if(e.jbutton.which == SDL_JoystickInstanceID(wctx->joy[1]))
 					{
 						switch(e.jbutton.button)
 						{
-						case 0: /* X */
-							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_A);
+						case 0: /* B */
+							xnes_controller_joystick_p2(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
 							break;
 						case 1: /* A */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, 0, XNES_JOYSTICK_A);
 							break;
-						case 2: /* B */
-							xnes_controller_joystick_p2(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
-							break;
-						case 3: /* Y */
+						case 2: /* Y */
 							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_B);
+							break;
+						case 3: /* X */
+							xnes_controller_joystick_p2_turbo(&wctx->nes->ctl, 0, XNES_JOYSTICK_A);
 							break;
 						case 4: /* L */
 							wctx->rewind = 0;
@@ -635,10 +690,10 @@ int main(int argc, char * argv[])
 						case 5: /* R */
 							xnes_set_speed(wctx->nes, 1.0);
 							break;
-						case 8: /* Select */
+						case 6: /* Select */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, 0, XNES_JOYSTICK_SELECT);
 							break;
-						case 9: /* Start */
+						case 7: /* Start */
 							xnes_controller_joystick_p2(&wctx->nes->ctl, 0, XNES_JOYSTICK_START);
 							break;
 						default:
