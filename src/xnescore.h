@@ -47,8 +47,6 @@ struct xnes_dma_t {
 struct xnes_ppu_t {
 	struct xnes_ctx_t * ctx;
 
-	uint32_t palette[64];
-
 	int cycles;
 	int scanline;
 	uint64_t frame;
@@ -57,10 +55,10 @@ struct xnes_ppu_t {
 	uint8_t name_table_data[2048];
 	uint8_t oam_data[256];
 	uint8_t oam_address;
-	uint32_t front_buf[256 * 240];
-	uint32_t back_buf[256 * 240];
-	uint32_t * front;
-	uint32_t * back;
+	uint8_t front_buf[256 * 240];
+	uint8_t back_buf[256 * 240];
+	uint8_t * front;
+	uint8_t * back;
 
 	uint16_t v;
 	uint16_t t;

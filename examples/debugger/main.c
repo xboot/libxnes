@@ -133,7 +133,7 @@ static void window_context_screen_refresh(struct window_context_t * wctx)
 	{
 		for(int x = 0; x < 256; x++)
 		{
-			uint32_t c = wctx->nes->ppu.front[(y * 256) + x];
+			uint32_t c = xnes_get_pixel(wctx->nes, x, y);
 			int p = ((y * SDL_SCREEN_SCALE) * (256 * SDL_SCREEN_SCALE)) + x * SDL_SCREEN_SCALE;
 			for(int j = 0; j < SDL_SCREEN_SCALE; j++)
 			{

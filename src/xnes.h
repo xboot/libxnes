@@ -19,6 +19,8 @@ void xnes_set_debugger(struct xnes_ctx_t * ctx, int (*debugger)(struct xnes_ctx_
 void xnes_set_audio(struct xnes_ctx_t * ctx, void * data, void (*cb)(void *, float), int rate);
 void xnes_set_speed(struct xnes_ctx_t * ctx, float speed);
 uint64_t xnes_step_frame(struct xnes_ctx_t * ctx);
+void xnes_set_palette(struct xnes_ctx_t * ctx, uint32_t * pal);
+uint32_t xnes_get_pixel(struct xnes_ctx_t * ctx, int x, int y);
 
 struct xnes_state_t {
 	struct xnes_ctx_t * ctx;

@@ -285,7 +285,7 @@ static void ppu_copy_y(struct xnes_ppu_t * ppu)
 
 static void ppu_set_vertical_blank(struct xnes_ppu_t * ppu)
 {
-	uint32_t * p = ppu->front;
+	uint8_t * p = ppu->front;
 	ppu->front = ppu->back;
 	ppu->back = p;
 	ppu->nmi_occurred = 1;
@@ -414,8 +414,7 @@ static void ppu_render_pixel(struct xnes_ppu_t * ppu)
 		else
 			color = background;
 	}
-	uint32_t c = ppu->palette[ppu_read_palette(ppu, (uint16_t)color) % 64];
-	ppu->back[256 * y + x] = c;
+	ppu->back[256 * y + x] = ppu_read_palette(ppu, (uint16_t)color) & 0x3f;
 }
 
 static uint32_t ppu_fetch_sprite_pattern(struct xnes_ppu_t * ppu, int i, int row)
@@ -619,20 +618,8 @@ void xnes_ppu_init(struct xnes_ppu_t * ppu, struct xnes_ctx_t * ctx)
 	xnes_ppu_reset(ppu);
 }
 
-static const uint32_t default_palette[64] = {
-    0xff666666, 0xff002a88, 0xff1412a7, 0xff3b00a4, 0xff5c007e, 0xff6e0040, 0xff6c0600, 0xff561d00,
-    0xff333500, 0xff0b4800, 0xff005200, 0xff004f08, 0xff00404d, 0xff000000, 0xff000000, 0xff000000,
-    0xffadadad, 0xff155fd9, 0xff4240ff, 0xff7527fe, 0xffa01acc, 0xffb71e7b, 0xffb53120, 0xff994e00,
-    0xff6b6d00, 0xff388700, 0xff0c9300, 0xff008f32, 0xff007c8d, 0xff000000, 0xff000000, 0xff000000,
-    0xfffffeff, 0xff64b0ff, 0xff9290ff, 0xffc676ff, 0xfff36aff, 0xfffe6ecc, 0xfffe8170, 0xffea9e22,
-    0xffbcbe00, 0xff88d800, 0xff5ce430, 0xff45e082, 0xff48cdde, 0xff4f4f4f, 0xff000000, 0xff000000,
-    0xfffffeff, 0xffc0dfff, 0xffd3d2ff, 0xffe8c8ff, 0xfffbc2ff, 0xfffec4ea, 0xfffeccc5, 0xfff7d8a5,
-    0xffe4e594, 0xffcfef96, 0xffbdf4ab, 0xffb3f3cc, 0xffb5ebf2, 0xffb8b8b8, 0xff000000, 0xff000000,
-};
-
 void xnes_ppu_reset(struct xnes_ppu_t * ppu)
 {
-	xnes_ppu_set_palette(ppu, (uint32_t *)&default_palette[0]);
 	ppu->cycles = 340;
 	ppu->scanline = 240;
 	ppu->frame = 0;
@@ -706,16 +693,7 @@ void xnes_ppu_write_register(struct xnes_ppu_t * ppu, uint16_t addr, uint8_t val
 	}
 }
 
-void xnes_ppu_set_palette(struct xnes_ppu_t * ppu, uint32_t * palette)
+uint8_t xnes_ppu_is_white_pixel(struct xnes_ppu_t * ppu, int x, int y)
 {
-	if(ppu && palette)
-		xnes_memcpy(&ppu->palette[0], palette, sizeof(uint32_t) * 64);
-}
-
-uint8_t xnes_ppu_is_white_pixel(struct xnes_ppu_t * ppu, uint8_t x, uint8_t y)
-{
-	uint32_t c = ppu->front[(y * 256) + x];
-	if(((c & 0x00ff0000) > 0x00f00000) && ((c & 0x0000ff00) > 0x0000f000) && ((c & 0x000000ff) > 0x000000f0))
-		return 1;
-	return 0;
+	return (ppu->front[(y << 8) + x] == 0x30) ? 1 : 0;
 }
