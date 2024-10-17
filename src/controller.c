@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 
-#include <ppu.h>
-#include <controller.h>
+#include <xnes.h>
 
 void xnes_controller_init(struct xnes_controller_t * ctl, struct xnes_ctx_t * ctx)
 {

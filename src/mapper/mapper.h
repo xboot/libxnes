@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include <xnescore.h>
+#include <cartridge.h>
 
 void xnes_mapper0_init(struct xnes_cartridge_t * c);
 void xnes_mapper1_init(struct xnes_cartridge_t * c);

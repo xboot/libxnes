@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <mapper.h>
+#include <xnes.h>
 
 static inline int mapper1_prg_bank_offset(struct xnes_cartridge_t * c, int index)
 {

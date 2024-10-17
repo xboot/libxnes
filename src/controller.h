@@ -5,7 +5,34 @@
 extern "C" {
 #endif
 
-#include <xnescore.h>
+#include <xnesconf.h>
+
+struct xnes_ctx_t;
+
+enum {
+	XNES_JOYSTICK_A			= (1 << 7),
+	XNES_JOYSTICK_B			= (1 << 6),
+	XNES_JOYSTICK_SELECT	= (1 << 5),
+	XNES_JOYSTICK_START		= (1 << 4),
+	XNES_JOYSTICK_UP		= (1 << 3),
+	XNES_JOYSTICK_DOWN		= (1 << 2),
+	XNES_JOYSTICK_LEFT		= (1 << 1),
+	XNES_JOYSTICK_RIGHT		= (1 << 0),
+};
+
+struct xnes_controller_t {
+	struct xnes_ctx_t * ctx;
+
+	uint8_t strobe;
+	uint8_t p1;
+	uint8_t p1_turbo;
+	uint8_t p1_index;
+	uint8_t p2;
+	uint8_t p2_turbo;
+	uint8_t p2_index;
+	uint8_t x, y;
+	uint8_t trigger;
+};
 
 void xnes_controller_init(struct xnes_controller_t * ctl, struct xnes_ctx_t * ctx);
 void xnes_controller_reset(struct xnes_controller_t * ctl);

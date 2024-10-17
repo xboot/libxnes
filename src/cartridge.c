@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 
-#include <mapper.h>
-#include <cartridge.h>
+#include <xnes.h>
 
 static int xnes_cartridge_mapper_init(struct xnes_cartridge_t * c)
 {

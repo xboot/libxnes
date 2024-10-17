@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-#include <cartridge.h>
-#include <cpu.h>
-#include <ppu.h>
+#include <xnes.h>
 
 static const uint16_t mirror_lookup[5][4] = {
 	{ 0, 0, 1, 1 },

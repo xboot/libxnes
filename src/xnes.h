@@ -5,12 +5,24 @@
 extern "C" {
 #endif
 
+#include <xnesconf.h>
 #include <cpu.h>
 #include <dma.h>
 #include <ppu.h>
 #include <apu.h>
 #include <controller.h>
 #include <cartridge.h>
+#include <mapper.h>
+
+struct xnes_ctx_t {
+	struct xnes_cpu_t cpu;
+	struct xnes_dma_t dma;
+	struct xnes_ppu_t ppu;
+	struct xnes_apu_t apu;
+	struct xnes_controller_t ctl;
+	struct xnes_cartridge_t * cartridge;
+	uint32_t palette[64];
+};
 
 struct xnes_ctx_t * xnes_ctx_alloc(const void * buf, size_t len);
 void xnes_ctx_free(struct xnes_ctx_t * ctx);
@@ -30,6 +42,7 @@ struct xnes_state_t {
 	uint32_t in;
 	uint32_t out;
 };
+
 struct xnes_state_t * xnes_state_alloc(struct xnes_ctx_t * ctx, int count);
 void xnes_state_free(struct xnes_state_t * state);
 void xnes_state_push(struct xnes_state_t * state);

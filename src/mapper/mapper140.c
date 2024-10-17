@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <mapper.h>
+#include <xnes.h>
 
 static uint8_t xnes_mapper140_cpu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {

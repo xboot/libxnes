@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-#include <cpu.h>
-#include <apu.h>
-#include <dma.h>
+#include <xnes.h>
 
 void xnes_dma_init(struct xnes_dma_t * dma, struct xnes_ctx_t * ctx)
 {

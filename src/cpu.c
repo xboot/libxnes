@@ -22,12 +22,7 @@
  * SOFTWARE.
  */
 
-#include <dma.h>
-#include <ppu.h>
-#include <apu.h>
-#include <controller.h>
-#include <cartridge.h>
-#include <cpu.h>
+#include <xnes.h>
 
 enum {
     CPU_INTERRUPT_NMI				= (1 << 0),

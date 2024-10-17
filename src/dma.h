@@ -5,7 +5,13 @@
 extern "C" {
 #endif
 
-#include <xnescore.h>
+#include <xnesconf.h>
+
+struct xnes_ctx_t;
+
+struct xnes_dma_t {
+	struct xnes_ctx_t * ctx;
+};
 
 void xnes_dma_init(struct xnes_dma_t * dma, struct xnes_ctx_t * ctx);
 void xnes_dma_reset(struct xnes_dma_t * dma);
