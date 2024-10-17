@@ -12,7 +12,6 @@ extern "C" {
 #include <apu.h>
 #include <controller.h>
 #include <cartridge.h>
-#include <mapper.h>
 
 struct xnes_ctx_t {
 	struct xnes_cpu_t cpu;
