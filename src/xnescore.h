@@ -355,6 +355,7 @@ struct xnes_ctx_t {
 	struct xnes_apu_t apu;
 	struct xnes_controller_t ctl;
 	struct xnes_cartridge_t * cartridge;
+	uint32_t palette[64];
 };
 
 #ifdef __cplusplus
