@@ -32,6 +32,8 @@ void xnes_controller_init(struct xnes_controller_t * ctl, struct xnes_ctx_t * ct
 
 void xnes_controller_reset(struct xnes_controller_t * ctl)
 {
+	ctl->turbo_count = 0x0;
+	ctl->turbo_speed = XNES_CONTROLLER_TURBO_SPEED_NORMAL;
 	ctl->strobe = 0x0;
 	ctl->p1 = 0x0;
 	ctl->p1_turbo = 0x0;
@@ -42,6 +44,11 @@ void xnes_controller_reset(struct xnes_controller_t * ctl)
 	ctl->x = 0;
 	ctl->y = 0;
 	ctl->trigger = 0;
+}
+
+void xnes_controller_set_turbo_speed(struct xnes_controller_t * ctl, uint8_t speed)
+{
+	ctl->turbo_speed = speed;
 }
 
 uint8_t xnes_controller_read_register(struct xnes_controller_t * ctl, uint16_t addr)
@@ -58,7 +65,7 @@ uint8_t xnes_controller_read_register(struct xnes_controller_t * ctl, uint16_t a
 			if(ctl->p1_index < 8)
 			{
 				if(ctl->p1_turbo & (0x80 >> ctl->p1_index))
-					val = (ctl->ctx->ppu.frame & 0x1) ? 1 : 0;
+					val = (ctl->turbo_count & ctl->turbo_speed) ? 1 : 0;
 				else
 					val = (ctl->p1 & (0x80 >> ctl->p1_index)) ? 1 : 0;
 				ctl->p1_index++;
@@ -75,7 +82,7 @@ uint8_t xnes_controller_read_register(struct xnes_controller_t * ctl, uint16_t a
 			if(ctl->p2_index < 8)
 			{
 				if(ctl->p2_turbo & (0x80 >> ctl->p2_index))
-					val = (ctl->ctx->ppu.frame & 0x1) ? 1 : 0;
+					val = (ctl->turbo_count & ctl->turbo_speed) ? 1 : 0;
 				else
 					val = (ctl->p2 & (0x80 >> ctl->p2_index)) ? 1 : 0;
 				ctl->p2_index++;
@@ -104,7 +111,8 @@ void xnes_controller_write_register(struct xnes_controller_t * ctl, uint16_t add
 	switch(addr)
 	{
 	case 0x4016:
-		ctl->strobe = val & 0x1;
+		ctl->turbo_count++;
+		ctl->strobe = val & 0x7;
 		if(ctl->strobe & (0x1 << 0))
 		{
 			ctl->p1_index = 0;
@@ -138,6 +146,10 @@ void xnes_controller_joystick_p2_turbo(struct xnes_controller_t * ctl, uint8_t d
 {
 	ctl->p2_turbo |= down;
 	ctl->p2_turbo &= ~up;
+}
+
+void xnes_controller_joystick_turbo_speed(struct xnes_controller_t * ctl, uint8_t speed)
+{
 }
 
 void xnes_controller_zapper(struct xnes_controller_t * ctl, uint8_t x, uint8_t y, uint8_t trigger)

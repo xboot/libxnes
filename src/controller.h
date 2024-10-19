@@ -10,19 +10,27 @@ extern "C" {
 struct xnes_ctx_t;
 
 enum {
-	XNES_JOYSTICK_A			= (1 << 7),
-	XNES_JOYSTICK_B			= (1 << 6),
-	XNES_JOYSTICK_SELECT	= (1 << 5),
-	XNES_JOYSTICK_START		= (1 << 4),
-	XNES_JOYSTICK_UP		= (1 << 3),
-	XNES_JOYSTICK_DOWN		= (1 << 2),
-	XNES_JOYSTICK_LEFT		= (1 << 1),
-	XNES_JOYSTICK_RIGHT		= (1 << 0),
+	XNES_CONTROLLER_TURBO_SPEED_FAST	= (1 << 1),
+	XNES_CONTROLLER_TURBO_SPEED_NORMAL	= (1 << 2),
+	XNES_CONTROLLER_TURBO_SPEED_SLOW	= (1 << 3),
+};
+
+enum {
+	XNES_JOYSTICK_A						= (1 << 7),
+	XNES_JOYSTICK_B						= (1 << 6),
+	XNES_JOYSTICK_SELECT				= (1 << 5),
+	XNES_JOYSTICK_START					= (1 << 4),
+	XNES_JOYSTICK_UP					= (1 << 3),
+	XNES_JOYSTICK_DOWN					= (1 << 2),
+	XNES_JOYSTICK_LEFT					= (1 << 1),
+	XNES_JOYSTICK_RIGHT					= (1 << 0),
 };
 
 struct xnes_controller_t {
 	struct xnes_ctx_t * ctx;
 
+	uint8_t turbo_count;
+	uint8_t turbo_speed;
 	uint8_t strobe;
 	uint8_t p1;
 	uint8_t p1_turbo;
@@ -36,6 +44,7 @@ struct xnes_controller_t {
 
 void xnes_controller_init(struct xnes_controller_t * ctl, struct xnes_ctx_t * ctx);
 void xnes_controller_reset(struct xnes_controller_t * ctl);
+void xnes_controller_set_turbo_speed(struct xnes_controller_t * ctl, uint8_t speed);
 uint8_t xnes_controller_read_register(struct xnes_controller_t * ctl, uint16_t addr);
 void xnes_controller_write_register(struct xnes_controller_t * ctl, uint16_t addr, uint8_t val);
 
