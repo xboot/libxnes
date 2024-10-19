@@ -124,6 +124,9 @@ struct xnes_cartridge_t {
 				uint8_t prg_bank0;
 				uint8_t prg_bank1;
 			} m225;
+			struct {
+				uint8_t prg_bank;
+			} m241;
 		} m;
 	} mapper;
 };
