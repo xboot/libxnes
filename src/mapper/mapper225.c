@@ -149,6 +149,9 @@ static void xnes_mapper225_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uin
 	}
 }
 
+/*
+ * BMC 58/64/72-IN-1
+ */
 void xnes_mapper225_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.m.m225.chr_bank = 0;

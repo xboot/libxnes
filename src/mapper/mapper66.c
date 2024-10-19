@@ -132,6 +132,9 @@ static void xnes_mapper66_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint
 	}
 }
 
+/*
+ * GNROM / MHROM
+ */
 void xnes_mapper66_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.m.m66.chr_bank = 0;

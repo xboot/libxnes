@@ -131,6 +131,9 @@ static void xnes_mapper140_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uin
 	}
 }
 
+/*
+ * JALECO 74HC174/139 JF-06/11/12
+ */
 void xnes_mapper140_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.m.m140.chr_bank = 0;

@@ -282,6 +282,9 @@ static void xnes_mapper1_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8
 	}
 }
 
+/*
+ * SxROM
+ */
 void xnes_mapper1_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.cpu_read = xnes_mapper1_cpu_read;

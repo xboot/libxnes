@@ -131,6 +131,9 @@ static void xnes_mapper3_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8
 	}
 }
 
+/*
+ * CNROM
+ */
 void xnes_mapper3_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.m.m3.chr_bank = 0;

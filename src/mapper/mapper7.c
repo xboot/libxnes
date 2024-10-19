@@ -135,6 +135,9 @@ static void xnes_mapper7_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8
 	}
 }
 
+/*
+ * AxROM
+ */
 void xnes_mapper7_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.m.m7.prg_bank = 0;

@@ -265,6 +265,9 @@ static void xnes_mapper4_ppu_step(struct xnes_ctx_t * ctx)
 	}
 }
 
+/*
+ * TxROM / HxROM / DxROM / TENGEN 8000xx
+ */
 void xnes_mapper4_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.m.m4.prg_offsets[0] = mapper4_prg_bank_offset(c, 0);

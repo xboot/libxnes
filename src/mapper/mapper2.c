@@ -132,6 +132,9 @@ static void xnes_mapper2_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8
 	}
 }
 
+/*
+ * UxROM
+ */
 void xnes_mapper2_init(struct xnes_cartridge_t * c)
 {
 	c->mapper.m.m2.prg_banks = c->prg_rom_size >> 14;
