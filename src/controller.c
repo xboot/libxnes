@@ -148,10 +148,6 @@ void xnes_controller_joystick_p2_turbo(struct xnes_controller_t * ctl, uint8_t d
 	ctl->p2_turbo &= ~up;
 }
 
-void xnes_controller_joystick_turbo_speed(struct xnes_controller_t * ctl, uint8_t speed)
-{
-}
-
 void xnes_controller_zapper(struct xnes_controller_t * ctl, uint8_t x, uint8_t y, uint8_t trigger)
 {
 	ctl->x = x;
