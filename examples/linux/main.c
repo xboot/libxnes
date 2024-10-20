@@ -61,7 +61,7 @@ static struct window_context_t * window_context_alloc(void)
 		return NULL;
 
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK);
-	SDL_EnableScreenSaver();
+	SDL_DisableScreenSaver();
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
 	SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
 	SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
