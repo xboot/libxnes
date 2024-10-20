@@ -124,6 +124,9 @@ struct xnes_cartridge_t {
 			} m79;
 			struct {
 				uint8_t chr_bank;
+			} m87;
+			struct {
+				uint8_t chr_bank;
 				uint8_t prg_bank;
 			} m113;
 			struct {
