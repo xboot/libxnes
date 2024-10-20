@@ -32,6 +32,7 @@ extern void xnes_mapper4_init(struct xnes_cartridge_t * c);
 extern void xnes_mapper7_init(struct xnes_cartridge_t * c);
 extern void xnes_mapper15_init(struct xnes_cartridge_t * c);
 extern void xnes_mapper66_init(struct xnes_cartridge_t * c);
+extern void xnes_mapper113_init(struct xnes_cartridge_t * c);
 extern void xnes_mapper140_init(struct xnes_cartridge_t * c);
 extern void xnes_mapper177_init(struct xnes_cartridge_t * c);
 extern void xnes_mapper225_init(struct xnes_cartridge_t * c);
@@ -66,6 +67,9 @@ static int xnes_cartridge_mapper_init(struct xnes_cartridge_t * c)
 			return 1;
 		case 66:
 			xnes_mapper66_init(c);
+			return 1;
+		case 113:
+			xnes_mapper113_init(c);
 			return 1;
 		case 140:
 			xnes_mapper140_init(c);
