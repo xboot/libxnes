@@ -31,15 +31,25 @@ struct xnes_controller_t {
 
 	uint8_t turbo_count;
 	uint8_t turbo_speed;
-	uint8_t strobe;
-	uint8_t p1;
-	uint8_t p1_turbo;
-	uint8_t p1_index;
-	uint8_t p2;
-	uint8_t p2_turbo;
-	uint8_t p2_index;
-	uint8_t x, y;
-	uint8_t trigger;
+	uint8_t latch;
+
+	struct {
+		struct {
+			uint8_t key;
+			uint8_t key_turbo;
+			uint8_t key_index;
+		} p1;
+		struct {
+			uint8_t key;
+			uint8_t key_turbo;
+			uint8_t key_index;
+		} p2;
+	} joystick;
+
+	struct {
+		uint8_t x, y;
+		uint8_t trigger;
+	} zapper;
 };
 
 void xnes_controller_init(struct xnes_controller_t * ctl, struct xnes_ctx_t * ctx);

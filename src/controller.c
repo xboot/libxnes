@@ -34,16 +34,18 @@ void xnes_controller_reset(struct xnes_controller_t * ctl)
 {
 	ctl->turbo_count = 0x0;
 	ctl->turbo_speed = XNES_CONTROLLER_TURBO_SPEED_NORMAL;
-	ctl->strobe = 0x0;
-	ctl->p1 = 0x0;
-	ctl->p1_turbo = 0x0;
-	ctl->p1_index = 0x0;
-	ctl->p2 = 0x0;
-	ctl->p2_turbo = 0x0;
-	ctl->p2_index = 0x0;
-	ctl->x = 0;
-	ctl->y = 0;
-	ctl->trigger = 0;
+	ctl->latch = 0x0;
+
+	ctl->joystick.p1.key = 0x0;
+	ctl->joystick.p1.key_turbo = 0x0;
+	ctl->joystick.p1.key_index = 0x0;
+	ctl->joystick.p2.key = 0x0;
+	ctl->joystick.p2.key_turbo = 0x0;
+	ctl->joystick.p2.key_index = 0x0;
+
+	ctl->zapper.x = 0;
+	ctl->zapper.y = 0;
+	ctl->zapper.trigger = 0;
 }
 
 void xnes_controller_set_turbo_speed(struct xnes_controller_t * ctl, uint8_t speed)
@@ -58,44 +60,44 @@ uint8_t xnes_controller_read_register(struct xnes_controller_t * ctl, uint16_t a
 	switch(addr)
 	{
 	case 0x4016:
-		if(ctl->strobe & (0x1 << 0))
-			val = (ctl->p1 & 0x80) ? 1 : 0;
+		if(ctl->latch & (0x1 << 0))
+			val = (ctl->joystick.p1.key & 0x80) ? 1 : 0;
 		else
 		{
-			if(ctl->p1_index < 8)
+			if(ctl->joystick.p1.key_index < 8)
 			{
-				if(ctl->p1_turbo & (0x80 >> ctl->p1_index))
+				if(ctl->joystick.p1.key_turbo & (0x80 >> ctl->joystick.p1.key_index))
 					val = (ctl->turbo_count & ctl->turbo_speed) ? 1 : 0;
 				else
-					val = (ctl->p1 & (0x80 >> ctl->p1_index)) ? 1 : 0;
-				ctl->p1_index++;
+					val = (ctl->joystick.p1.key & (0x80 >> ctl->joystick.p1.key_index)) ? 1 : 0;
+				ctl->joystick.p1.key_index++;
 			}
 			else
 				val = 1;
 		}
 		break;
 	case 0x4017:
-		if(ctl->strobe & (0x1 << 0))
-			val = (ctl->p2 & 0x80) ? 1 : 0;
+		if(ctl->latch & (0x1 << 0))
+			val = (ctl->joystick.p2.key & 0x80) ? 1 : 0;
 		else
 		{
-			if(ctl->p2_index < 8)
+			if(ctl->joystick.p2.key_index < 8)
 			{
-				if(ctl->p2_turbo & (0x80 >> ctl->p2_index))
+				if(ctl->joystick.p2.key_turbo & (0x80 >> ctl->joystick.p2.key_index))
 					val = (ctl->turbo_count & ctl->turbo_speed) ? 1 : 0;
 				else
-					val = (ctl->p2 & (0x80 >> ctl->p2_index)) ? 1 : 0;
-				ctl->p2_index++;
+					val = (ctl->joystick.p2.key & (0x80 >> ctl->joystick.p2.key_index)) ? 1 : 0;
+				ctl->joystick.p2.key_index++;
 			}
 			else
 				val = 1;
-			if((ctl->x != 0) && (ctl->y != 0))
+			if((ctl->zapper.x != 0) && (ctl->zapper.y != 0))
 			{
-				if(xnes_ppu_is_white_pixel(&ctl->ctx->ppu, ctl->x, ctl->y))
+				if(xnes_ppu_is_white_pixel(&ctl->ctx->ppu, ctl->zapper.x, ctl->zapper.y))
 					val |= (0 << 3);
 				else
 					val |= (1 << 3);
-				if(ctl->trigger)
+				if(ctl->zapper.trigger)
 					val |= (1 << 4);
 			}
 		}
@@ -112,13 +114,14 @@ void xnes_controller_write_register(struct xnes_controller_t * ctl, uint16_t add
 	{
 	case 0x4016:
 		ctl->turbo_count++;
-		ctl->strobe = val & 0x7;
-		if(ctl->strobe & (0x1 << 0))
+		ctl->latch = val;
+		if(ctl->latch & (0x1 << 0))
 		{
-			ctl->p1_index = 0;
-			ctl->p2_index = 0;
+			ctl->joystick.p1.key_index = 0;
+			ctl->joystick.p2.key_index = 0;
 		}
 		break;
+
 	default:
 		break;
 	}
@@ -126,31 +129,31 @@ void xnes_controller_write_register(struct xnes_controller_t * ctl, uint16_t add
 
 void xnes_controller_joystick_p1(struct xnes_controller_t * ctl, uint8_t down, uint8_t up)
 {
-	ctl->p1 |= down;
-	ctl->p1 &= ~up;
+	ctl->joystick.p1.key |= down;
+	ctl->joystick.p1.key &= ~up;
 }
 
 void xnes_controller_joystick_p2(struct xnes_controller_t * ctl, uint8_t down, uint8_t up)
 {
-	ctl->p2 |= down;
-	ctl->p2 &= ~up;
+	ctl->joystick.p2.key |= down;
+	ctl->joystick.p2.key &= ~up;
 }
 
 void xnes_controller_joystick_p1_turbo(struct xnes_controller_t * ctl, uint8_t down, uint8_t up)
 {
-	ctl->p1_turbo |= down;
-	ctl->p1_turbo &= ~up;
+	ctl->joystick.p1.key_turbo |= down;
+	ctl->joystick.p1.key_turbo &= ~up;
 }
 
 void xnes_controller_joystick_p2_turbo(struct xnes_controller_t * ctl, uint8_t down, uint8_t up)
 {
-	ctl->p2_turbo |= down;
-	ctl->p2_turbo &= ~up;
+	ctl->joystick.p2.key_turbo |= down;
+	ctl->joystick.p2.key_turbo &= ~up;
 }
 
 void xnes_controller_zapper(struct xnes_controller_t * ctl, uint8_t x, uint8_t y, uint8_t trigger)
 {
-	ctl->x = x;
-	ctl->y = y;
-	ctl->trigger = trigger ? 1 : 0;
+	ctl->zapper.x = x;
+	ctl->zapper.y = y;
+	ctl->zapper.trigger = trigger ? 1 : 0;
 }
