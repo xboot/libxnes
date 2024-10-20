@@ -111,6 +111,10 @@ struct xnes_cartridge_t {
 				uint8_t prg_bank;
 			} m7;
 			struct {
+				uint8_t prg_bank;
+				uint8_t prg_bank_shift;
+			} m15;
+			struct {
 				uint8_t chr_bank;
 				uint8_t prg_bank;
 			} m66;
