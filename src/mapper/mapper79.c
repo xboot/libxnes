@@ -24,7 +24,7 @@
 
 #include <xnes.h>
 
-static uint8_t xnes_mapper113_cpu_read(struct xnes_ctx_t * ctx, uint16_t addr)
+static uint8_t xnes_mapper79_cpu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
 
@@ -42,14 +42,14 @@ static uint8_t xnes_mapper113_cpu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 	case 5:	/* [0xA000, 0xBFFF] */
 	case 6:	/* [0xC000, 0xDFFF] */
 	case 7:	/* [0xE000, 0xFFFF] */
-		return c->prg_rom[(c->mapper.m.m113.prg_bank << 15) + (addr - 0x8000)];
+		return c->prg_rom[(c->mapper.m.m79.prg_bank << 15) + (addr - 0x8000)];
 	default:
 		break;
 	}
 	return 0;
 }
 
-static void xnes_mapper113_cpu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+static void xnes_mapper79_cpu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
 
@@ -64,10 +64,6 @@ static void xnes_mapper113_cpu_write(struct xnes_ctx_t * ctx, uint16_t addr, uin
 		{
 			c->mapper.m.m113.chr_bank = ((val & 0x40) >> 3) | ((val >> 0) & 0x7);
 			c->mapper.m.m113.prg_bank = (val >> 3) & 0x7;
-			if(val & 0x80)
-				c->mirror = XNES_CARTRIDGE_MIRROR_VERTICAL;
-			else
-				c->mirror = XNES_CARTRIDGE_MIRROR_HORIZONTAL;
 		}
 		break;
 	case 3:	/* [0x6000, 0x7FFF] */
@@ -86,14 +82,14 @@ static void xnes_mapper113_cpu_write(struct xnes_ctx_t * ctx, uint16_t addr, uin
 	}
 }
 
-static uint8_t xnes_mapper113_ppu_read(struct xnes_ctx_t * ctx, uint16_t addr)
+static uint8_t xnes_mapper79_ppu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
 
 	switch(addr >> 13)
 	{
 	case 0:	/* [0x0000, 0x1FFF] */
-		return c->chr_rom[(c->mapper.m.m113.chr_bank << 13) + addr];
+		return c->chr_rom[(c->mapper.m.m79.chr_bank << 13) + addr];
 	case 1:	/* [0x2000, 0x3FFF] */
 		break;
 	case 2:	/* [0x4000, 0x5FFF] */
@@ -114,7 +110,7 @@ static uint8_t xnes_mapper113_ppu_read(struct xnes_ctx_t * ctx, uint16_t addr)
 	return 0;
 }
 
-static void xnes_mapper113_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
+static void xnes_mapper79_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uint8_t val)
 {
 	struct xnes_cartridge_t * c = ctx->cartridge;
 
@@ -142,15 +138,15 @@ static void xnes_mapper113_ppu_write(struct xnes_ctx_t * ctx, uint16_t addr, uin
 	}
 }
 
-void xnes_mapper113_init(struct xnes_cartridge_t * c)
+void xnes_mapper79_init(struct xnes_cartridge_t * c)
 {
-	c->mapper.m.m113.chr_bank = 0;
-	c->mapper.m.m113.prg_bank = 0;
+	c->mapper.m.m79.chr_bank = 0;
+	c->mapper.m.m79.prg_bank = 0;
 
-	c->mapper.cpu_read = xnes_mapper113_cpu_read;
-	c->mapper.cpu_write = xnes_mapper113_cpu_write;
-	c->mapper.ppu_read = xnes_mapper113_ppu_read;
-	c->mapper.ppu_write = xnes_mapper113_ppu_write;
+	c->mapper.cpu_read = xnes_mapper79_cpu_read;
+	c->mapper.cpu_write = xnes_mapper79_cpu_write;
+	c->mapper.ppu_read = xnes_mapper79_ppu_read;
+	c->mapper.ppu_write = xnes_mapper79_ppu_write;
 	c->mapper.apu_step = NULL;
 	c->mapper.ppu_step = NULL;
 }
