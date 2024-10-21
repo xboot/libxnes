@@ -19,7 +19,7 @@ RM			:=	rm -fr
 ASFLAGS		:=	-g -ggdb -Wall -O3 -ffunction-sections -fdata-sections -ffreestanding -municode -std=gnu99
 CFLAGS		:=	-g -ggdb -Wall -O3 -ffunction-sections -fdata-sections -ffreestanding -municode -std=gnu99
 CXXFLAGS	:=	-g -ggdb -Wall -O3 -ffunction-sections -fdata-sections -ffreestanding -municode
-LDFLAGS		:=
+LDFLAGS		:=	xnes.res
 OCFLAGS		:=	-v -O binary
 ODFLAGS		:=
 MCFLAGS		:=
