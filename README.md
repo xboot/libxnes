@@ -28,24 +28,29 @@ cd examples/linux/output/
 ./xnes <rom.nes>
 ```
 
+## Documentation
+
+Online documentation: [https://libxnes.xboot.org](https://libxnes.xboot.org)
+
 ## Screenshots
-![super-mario](documents/screenshots/super-mario.png)
-![contra](documents/screenshots/contra.png)
-![battle-city](documents/screenshots/battle-city.png)
-![flying-hero](documents/screenshots/flying-hero.png)
-![gun-smoke](documents/screenshots/gun-smoke.png)
-![jackal](documents/screenshots/jackal.png)
-![1943](documents/screenshots/1943.png)
-![circus-chablic](documents/screenshots/circus-chablic.png)
-![chinese-chese](documents/screenshots/chinese-chese.png)
-![lode-runner](documents/screenshots/lode-runner.png)
-![pinball](documents/screenshots/pinball.png)
-![excite-bike](documents/screenshots/excite-bike.png)
-![bomber-man](documents/screenshots/bomber-man.png)
-![3eye](documents/screenshots/3eye.png)
-![chip-dale](documents/screenshots/chip-dale.png)
-![duck-hunt](documents/screenshots/duck-hunt.png)
-![64-in-1](documents/screenshots/64-in-1.png)
+
+![super-mario](documents/static/screenshots/super-mario.png)
+![contra](documents/static/screenshots/contra.png)
+![battle-city](documents/static/screenshots/battle-city.png)
+![flying-hero](documents/static/screenshots/flying-hero.png)
+![gun-smoke](documents/static/screenshots/gun-smoke.png)
+![jackal](documents/static/screenshots/jackal.png)
+![1943](documents/static/screenshots/1943.png)
+![circus-chablic](documents/static/screenshots/circus-chablic.png)
+![chinese-chese](documents/static/screenshots/chinese-chese.png)
+![lode-runner](documents/static/screenshots/lode-runner.png)
+![pinball](documents/static/screenshots/pinball.png)
+![excite-bike](documents/static/screenshots/excite-bike.png)
+![bomber-man](documents/static/screenshots/bomber-man.png)
+![3eye](documents/static/screenshots/3eye.png)
+![chip-dale](documents/static/screenshots/chip-dale.png)
+![duck-hunt](documents/static/screenshots/duck-hunt.png)
+![64-in-1](documents/static/screenshots/64-in-1.png)
 
 ## Keyboard
 
